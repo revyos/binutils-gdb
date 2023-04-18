@@ -24,7 +24,7 @@ LIBCTF_1.0 {
 	ctf_simple_open;
 	ctf_create;
 	ctf_close;
-	ctf_file_close;
+	ctf_dict_close;
 
 	ctf_cuname;
 	ctf_cuname_set;

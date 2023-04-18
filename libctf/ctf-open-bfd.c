@@ -214,7 +214,7 @@ ctf_fdopen (int fd, const char *filename, const char *target, int *errp)
       && (ctfhdr.ctp_magic == CTF_MAGIC
 	  || ctfhdr.ctp_magic == bswap_16 (CTF_MAGIC)))
     {
-      ctf_file_t *fp = NULL;
+      ctf_dict_t *fp = NULL;
       void *data;
 
       if ((data = ctf_mmap (st.st_size, 0, fd)) == NULL)

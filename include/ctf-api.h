@@ -34,13 +34,13 @@ extern "C"
 #endif
 
 /* Clients can open one or more CTF containers and obtain a pointer to an
-   opaque ctf_file_t.  Types are identified by an opaque ctf_id_t token.
+   opaque ctf_dict_t.  Types are identified by an opaque ctf_id_t token.
    They can also open or create read-only archives of CTF containers in a
    ctf_archive_t.
 
    These opaque definitions allow libctf to evolve without breaking clients.  */
 
-typedef struct ctf_file ctf_file_t;
+typedef struct ctf_dict ctf_dict_t;
 typedef struct ctf_archive_internal ctf_archive_t;
 typedef unsigned long ctf_id_t;
 
@@ -238,7 +238,7 @@ typedef int ctf_type_f (ctf_id_t type, void *arg);
 typedef int ctf_type_all_f (ctf_id_t type, int flag, void *arg);
 typedef int ctf_label_f (const char *name, const ctf_lblinfo_t *info,
 			 void *arg);
-typedef int ctf_archive_member_f (ctf_file_t *fp, const char *name, void *arg);
+typedef int ctf_archive_member_f (ctf_dict_t *fp, const char *name, void *arg);
 typedef int ctf_archive_raw_member_f (const char *name, const void *content,
 				      size_t len, void *arg);
 typedef char *ctf_dump_decorate_f (ctf_sect_names_t sect,
@@ -249,7 +249,7 @@ typedef struct ctf_dump_state ctf_dump_state_t;
 /* Opening.  These mostly return an abstraction over both CTF files and CTF
    archives: so they can be used to open both.  CTF files will appear to be an
    archive with one member named '.ctf'.  The low-level functions
-   ctf_simple_open() and ctf_bufopen() return ctf_file_t's directly, and cannot
+   ctf_simple_open() and ctf_bufopen() return ctf_dict_t's directly, and cannot
    be used on CTF archives.  */
 
 extern ctf_archive_t *ctf_bfdopen (struct bfd *, int *);
@@ -260,17 +260,17 @@ extern ctf_archive_t *ctf_fdopen (int fd, const char *filename,
 extern ctf_archive_t *ctf_open (const char *filename,
 				const char *target, int *errp);
 extern void ctf_close (ctf_archive_t *);
-extern ctf_sect_t ctf_getdatasect (const ctf_file_t *);
-extern ctf_archive_t *ctf_get_arc (const ctf_file_t *);
+extern ctf_sect_t ctf_getdatasect (const ctf_dict_t *);
+extern ctf_archive_t *ctf_get_arc (const ctf_dict_t *);
 extern ctf_archive_t *ctf_arc_open (const char *, int *);
 extern ctf_archive_t *ctf_arc_bufopen (const ctf_sect_t *,
 				       const ctf_sect_t *,
 				       const ctf_sect_t *,
 				       int *);
 extern void ctf_arc_close (ctf_archive_t *);
-extern ctf_file_t *ctf_arc_open_by_name (const ctf_archive_t *,
+extern ctf_dict_t *ctf_arc_open_by_name (const ctf_archive_t *,
 					 const char *, int *);
-extern ctf_file_t *ctf_arc_open_by_name_sections (const ctf_archive_t *,
+extern ctf_dict_t *ctf_arc_open_by_name_sections (const ctf_archive_t *,
 						  const ctf_sect_t *,
 						  const ctf_sect_t *,
 						  const char *, int *);
@@ -278,79 +278,79 @@ extern ctf_file_t *ctf_arc_open_by_name_sections (const ctf_archive_t *,
 /* The next functions return or close real CTF files, or write out CTF archives,
    not opaque containers around either.  */
 
-extern ctf_file_t *ctf_simple_open (const char *, size_t, const char *, size_t,
+extern ctf_dict_t *ctf_simple_open (const char *, size_t, const char *, size_t,
 				   size_t, const char *, size_t, int *);
-extern ctf_file_t *ctf_bufopen (const ctf_sect_t *, const ctf_sect_t *,
+extern ctf_dict_t *ctf_bufopen (const ctf_sect_t *, const ctf_sect_t *,
 				const ctf_sect_t *, int *);
-extern void ctf_file_close (ctf_file_t *);
+extern void ctf_dict_close (ctf_dict_t *);
 
-extern int ctf_arc_write (const char *, ctf_file_t **, size_t,
+extern int ctf_arc_write (const char *, ctf_dict_t **, size_t,
 			  const char **, size_t);
-extern int ctf_arc_write_fd (int, ctf_file_t **, size_t, const char **,
+extern int ctf_arc_write_fd (int, ctf_dict_t **, size_t, const char **,
 			     size_t);
 
-extern const char *ctf_cuname (ctf_file_t *);
-extern int ctf_cuname_set (ctf_file_t *, const char *);
-extern ctf_file_t *ctf_parent_file (ctf_file_t *);
-extern const char *ctf_parent_name (ctf_file_t *);
-extern int ctf_parent_name_set (ctf_file_t *, const char *);
-extern int ctf_type_isparent (ctf_file_t *, ctf_id_t);
-extern int ctf_type_ischild (ctf_file_t *, ctf_id_t);
+extern const char *ctf_cuname (ctf_dict_t *);
+extern int ctf_cuname_set (ctf_dict_t *, const char *);
+extern ctf_dict_t *ctf_parent_file (ctf_dict_t *);
+extern const char *ctf_parent_name (ctf_dict_t *);
+extern int ctf_parent_name_set (ctf_dict_t *, const char *);
+extern int ctf_type_isparent (ctf_dict_t *, ctf_id_t);
+extern int ctf_type_ischild (ctf_dict_t *, ctf_id_t);
 
-extern int ctf_import (ctf_file_t *, ctf_file_t *);
-extern int ctf_setmodel (ctf_file_t *, int);
-extern int ctf_getmodel (ctf_file_t *);
+extern int ctf_import (ctf_dict_t *, ctf_dict_t *);
+extern int ctf_setmodel (ctf_dict_t *, int);
+extern int ctf_getmodel (ctf_dict_t *);
 
-extern void ctf_setspecific (ctf_file_t *, void *);
-extern void *ctf_getspecific (ctf_file_t *);
+extern void ctf_setspecific (ctf_dict_t *, void *);
+extern void *ctf_getspecific (ctf_dict_t *);
 
-extern int ctf_errno (ctf_file_t *);
+extern int ctf_errno (ctf_dict_t *);
 extern const char *ctf_errmsg (int);
 extern int ctf_version (int);
 
-extern int ctf_func_info (ctf_file_t *, unsigned long, ctf_funcinfo_t *);
-extern int ctf_func_args (ctf_file_t *, unsigned long, uint32_t, ctf_id_t *);
-extern int ctf_func_type_info (ctf_file_t *, ctf_id_t, ctf_funcinfo_t *);
-extern int ctf_func_type_args (ctf_file_t *, ctf_id_t, uint32_t, ctf_id_t *);
+extern int ctf_func_info (ctf_dict_t *, unsigned long, ctf_funcinfo_t *);
+extern int ctf_func_args (ctf_dict_t *, unsigned long, uint32_t, ctf_id_t *);
+extern int ctf_func_type_info (ctf_dict_t *, ctf_id_t, ctf_funcinfo_t *);
+extern int ctf_func_type_args (ctf_dict_t *, ctf_id_t, uint32_t, ctf_id_t *);
 
-extern ctf_id_t ctf_lookup_by_name (ctf_file_t *, const char *);
-extern ctf_id_t ctf_lookup_by_symbol (ctf_file_t *, unsigned long);
-extern ctf_id_t ctf_lookup_variable (ctf_file_t *, const char *);
+extern ctf_id_t ctf_lookup_by_name (ctf_dict_t *, const char *);
+extern ctf_id_t ctf_lookup_by_symbol (ctf_dict_t *, unsigned long);
+extern ctf_id_t ctf_lookup_variable (ctf_dict_t *, const char *);
 
-extern ctf_id_t ctf_type_resolve (ctf_file_t *, ctf_id_t);
-extern char *ctf_type_aname (ctf_file_t *, ctf_id_t);
-extern char *ctf_type_aname_raw (ctf_file_t *, ctf_id_t);
-extern ssize_t ctf_type_lname (ctf_file_t *, ctf_id_t, char *, size_t);
-extern char *ctf_type_name (ctf_file_t *, ctf_id_t, char *, size_t);
-extern ssize_t ctf_type_size (ctf_file_t *, ctf_id_t);
-extern ssize_t ctf_type_align (ctf_file_t *, ctf_id_t);
-extern int ctf_type_kind (ctf_file_t *, ctf_id_t);
-extern ctf_id_t ctf_type_reference (ctf_file_t *, ctf_id_t);
-extern ctf_id_t ctf_type_pointer (ctf_file_t *, ctf_id_t);
-extern int ctf_type_encoding (ctf_file_t *, ctf_id_t, ctf_encoding_t *);
-extern int ctf_type_visit (ctf_file_t *, ctf_id_t, ctf_visit_f *, void *);
-extern int ctf_type_cmp (ctf_file_t *, ctf_id_t, ctf_file_t *, ctf_id_t);
-extern int ctf_type_compat (ctf_file_t *, ctf_id_t, ctf_file_t *, ctf_id_t);
+extern ctf_id_t ctf_type_resolve (ctf_dict_t *, ctf_id_t);
+extern char *ctf_type_aname (ctf_dict_t *, ctf_id_t);
+extern char *ctf_type_aname_raw (ctf_dict_t *, ctf_id_t);
+extern ssize_t ctf_type_lname (ctf_dict_t *, ctf_id_t, char *, size_t);
+extern char *ctf_type_name (ctf_dict_t *, ctf_id_t, char *, size_t);
+extern ssize_t ctf_type_size (ctf_dict_t *, ctf_id_t);
+extern ssize_t ctf_type_align (ctf_dict_t *, ctf_id_t);
+extern int ctf_type_kind (ctf_dict_t *, ctf_id_t);
+extern ctf_id_t ctf_type_reference (ctf_dict_t *, ctf_id_t);
+extern ctf_id_t ctf_type_pointer (ctf_dict_t *, ctf_id_t);
+extern int ctf_type_encoding (ctf_dict_t *, ctf_id_t, ctf_encoding_t *);
+extern int ctf_type_visit (ctf_dict_t *, ctf_id_t, ctf_visit_f *, void *);
+extern int ctf_type_cmp (ctf_dict_t *, ctf_id_t, ctf_dict_t *, ctf_id_t);
+extern int ctf_type_compat (ctf_dict_t *, ctf_id_t, ctf_dict_t *, ctf_id_t);
 
-extern int ctf_member_info (ctf_file_t *, ctf_id_t, const char *,
+extern int ctf_member_info (ctf_dict_t *, ctf_id_t, const char *,
 			    ctf_membinfo_t *);
-extern int ctf_array_info (ctf_file_t *, ctf_id_t, ctf_arinfo_t *);
+extern int ctf_array_info (ctf_dict_t *, ctf_id_t, ctf_arinfo_t *);
 
-extern const char *ctf_enum_name (ctf_file_t *, ctf_id_t, int);
-extern int ctf_enum_value (ctf_file_t *, ctf_id_t, const char *, int *);
+extern const char *ctf_enum_name (ctf_dict_t *, ctf_id_t, int);
+extern int ctf_enum_value (ctf_dict_t *, ctf_id_t, const char *, int *);
 
-extern void ctf_label_set (ctf_file_t *, const char *);
-extern const char *ctf_label_get (ctf_file_t *);
+extern void ctf_label_set (ctf_dict_t *, const char *);
+extern const char *ctf_label_get (ctf_dict_t *);
 
-extern const char *ctf_label_topmost (ctf_file_t *);
-extern int ctf_label_info (ctf_file_t *, const char *, ctf_lblinfo_t *);
+extern const char *ctf_label_topmost (ctf_dict_t *);
+extern int ctf_label_info (ctf_dict_t *, const char *, ctf_lblinfo_t *);
 
-extern int ctf_member_iter (ctf_file_t *, ctf_id_t, ctf_member_f *, void *);
-extern int ctf_enum_iter (ctf_file_t *, ctf_id_t, ctf_enum_f *, void *);
-extern int ctf_type_iter (ctf_file_t *, ctf_type_f *, void *);
-extern int ctf_type_iter_all (ctf_file_t *, ctf_type_all_f *, void *);
-extern int ctf_label_iter (ctf_file_t *, ctf_label_f *, void *);
-extern int ctf_variable_iter (ctf_file_t *, ctf_variable_f *, void *);
+extern int ctf_member_iter (ctf_dict_t *, ctf_id_t, ctf_member_f *, void *);
+extern int ctf_enum_iter (ctf_dict_t *, ctf_id_t, ctf_enum_f *, void *);
+extern int ctf_type_iter (ctf_dict_t *, ctf_type_f *, void *);
+extern int ctf_type_iter_all (ctf_dict_t *, ctf_type_all_f *, void *);
+extern int ctf_label_iter (ctf_dict_t *, ctf_label_f *, void *);
+extern int ctf_variable_iter (ctf_dict_t *, ctf_variable_f *, void *);
 extern int ctf_archive_iter (const ctf_archive_t *, ctf_archive_member_f *,
 			     void *);
 /* This function alone does not currently operate on CTF files masquerading
@@ -359,83 +359,83 @@ extern int ctf_archive_iter (const ctf_archive_t *, ctf_archive_member_f *,
    to deal with non-archives at all.  */
 extern int ctf_archive_raw_iter (const ctf_archive_t *,
 				 ctf_archive_raw_member_f *, void *);
-extern char *ctf_dump (ctf_file_t *, ctf_dump_state_t **state,
+extern char *ctf_dump (ctf_dict_t *, ctf_dump_state_t **state,
 		       ctf_sect_names_t sect, ctf_dump_decorate_f *,
 		       void *arg);
 
-extern ctf_id_t ctf_add_array (ctf_file_t *, uint32_t,
+extern ctf_id_t ctf_add_array (ctf_dict_t *, uint32_t,
 			       const ctf_arinfo_t *);
-extern ctf_id_t ctf_add_const (ctf_file_t *, uint32_t, ctf_id_t);
-extern ctf_id_t ctf_add_enum_encoded (ctf_file_t *, uint32_t, const char *,
+extern ctf_id_t ctf_add_const (ctf_dict_t *, uint32_t, ctf_id_t);
+extern ctf_id_t ctf_add_enum_encoded (ctf_dict_t *, uint32_t, const char *,
 				      const ctf_encoding_t *);
-extern ctf_id_t ctf_add_enum (ctf_file_t *, uint32_t, const char *);
-extern ctf_id_t ctf_add_float (ctf_file_t *, uint32_t,
+extern ctf_id_t ctf_add_enum (ctf_dict_t *, uint32_t, const char *);
+extern ctf_id_t ctf_add_float (ctf_dict_t *, uint32_t,
 			       const char *, const ctf_encoding_t *);
-extern ctf_id_t ctf_add_forward (ctf_file_t *, uint32_t, const char *,
+extern ctf_id_t ctf_add_forward (ctf_dict_t *, uint32_t, const char *,
 				 uint32_t);
-extern ctf_id_t ctf_add_function (ctf_file_t *, uint32_t,
+extern ctf_id_t ctf_add_function (ctf_dict_t *, uint32_t,
 				  const ctf_funcinfo_t *, const ctf_id_t *);
-extern ctf_id_t ctf_add_integer (ctf_file_t *, uint32_t, const char *,
+extern ctf_id_t ctf_add_integer (ctf_dict_t *, uint32_t, const char *,
 				 const ctf_encoding_t *);
-extern ctf_id_t ctf_add_slice (ctf_file_t *, uint32_t, ctf_id_t, const ctf_encoding_t *);
-extern ctf_id_t ctf_add_pointer (ctf_file_t *, uint32_t, ctf_id_t);
-extern ctf_id_t ctf_add_type (ctf_file_t *, ctf_file_t *, ctf_id_t);
-extern ctf_id_t ctf_add_typedef (ctf_file_t *, uint32_t, const char *,
+extern ctf_id_t ctf_add_slice (ctf_dict_t *, uint32_t, ctf_id_t, const ctf_encoding_t *);
+extern ctf_id_t ctf_add_pointer (ctf_dict_t *, uint32_t, ctf_id_t);
+extern ctf_id_t ctf_add_type (ctf_dict_t *, ctf_dict_t *, ctf_id_t);
+extern ctf_id_t ctf_add_typedef (ctf_dict_t *, uint32_t, const char *,
 				 ctf_id_t);
-extern ctf_id_t ctf_add_restrict (ctf_file_t *, uint32_t, ctf_id_t);
-extern ctf_id_t ctf_add_struct (ctf_file_t *, uint32_t, const char *);
-extern ctf_id_t ctf_add_union (ctf_file_t *, uint32_t, const char *);
-extern ctf_id_t ctf_add_struct_sized (ctf_file_t *, uint32_t, const char *,
+extern ctf_id_t ctf_add_restrict (ctf_dict_t *, uint32_t, ctf_id_t);
+extern ctf_id_t ctf_add_struct (ctf_dict_t *, uint32_t, const char *);
+extern ctf_id_t ctf_add_union (ctf_dict_t *, uint32_t, const char *);
+extern ctf_id_t ctf_add_struct_sized (ctf_dict_t *, uint32_t, const char *,
 				      size_t);
-extern ctf_id_t ctf_add_union_sized (ctf_file_t *, uint32_t, const char *,
+extern ctf_id_t ctf_add_union_sized (ctf_dict_t *, uint32_t, const char *,
 				     size_t);
-extern ctf_id_t ctf_add_volatile (ctf_file_t *, uint32_t, ctf_id_t);
+extern ctf_id_t ctf_add_volatile (ctf_dict_t *, uint32_t, ctf_id_t);
 
-extern int ctf_add_enumerator (ctf_file_t *, ctf_id_t, const char *, int);
-extern int ctf_add_member (ctf_file_t *, ctf_id_t, const char *, ctf_id_t);
-extern int ctf_add_member_offset (ctf_file_t *, ctf_id_t, const char *,
+extern int ctf_add_enumerator (ctf_dict_t *, ctf_id_t, const char *, int);
+extern int ctf_add_member (ctf_dict_t *, ctf_id_t, const char *, ctf_id_t);
+extern int ctf_add_member_offset (ctf_dict_t *, ctf_id_t, const char *,
 				  ctf_id_t, unsigned long);
-extern int ctf_add_member_encoded (ctf_file_t *, ctf_id_t, const char *,
+extern int ctf_add_member_encoded (ctf_dict_t *, ctf_id_t, const char *,
 				   ctf_id_t, unsigned long,
 				   const ctf_encoding_t);
 
-extern int ctf_add_variable (ctf_file_t *, const char *, ctf_id_t);
+extern int ctf_add_variable (ctf_dict_t *, const char *, ctf_id_t);
 
-extern int ctf_set_array (ctf_file_t *, ctf_id_t, const ctf_arinfo_t *);
+extern int ctf_set_array (ctf_dict_t *, ctf_id_t, const ctf_arinfo_t *);
 
-extern ctf_file_t *ctf_create (int *);
-extern int ctf_update (ctf_file_t *);
-extern ctf_snapshot_id_t ctf_snapshot (ctf_file_t *);
-extern int ctf_rollback (ctf_file_t *, ctf_snapshot_id_t);
-extern int ctf_discard (ctf_file_t *);
-extern int ctf_write (ctf_file_t *, int);
-extern int ctf_gzwrite (ctf_file_t *fp, gzFile fd);
-extern int ctf_compress_write (ctf_file_t * fp, int fd);
-extern unsigned char *ctf_write_mem (ctf_file_t *, size_t *, size_t threshold);
+extern ctf_dict_t *ctf_create (int *);
+extern int ctf_update (ctf_dict_t *);
+extern ctf_snapshot_id_t ctf_snapshot (ctf_dict_t *);
+extern int ctf_rollback (ctf_dict_t *, ctf_snapshot_id_t);
+extern int ctf_discard (ctf_dict_t *);
+extern int ctf_write (ctf_dict_t *, int);
+extern int ctf_gzwrite (ctf_dict_t *fp, gzFile fd);
+extern int ctf_compress_write (ctf_dict_t * fp, int fd);
+extern unsigned char *ctf_write_mem (ctf_dict_t *, size_t *, size_t threshold);
 
 /* The ctf_link interfaces are not stable yet.  No guarantees!  */
 
-extern int ctf_link_add_ctf (ctf_file_t *, ctf_archive_t *, const char *);
-extern int ctf_link (ctf_file_t *, int share_mode);
+extern int ctf_link_add_ctf (ctf_dict_t *, ctf_archive_t *, const char *);
+extern int ctf_link (ctf_dict_t *, int share_mode);
 typedef const char *ctf_link_strtab_string_f (uint32_t *offset, void *arg);
-extern int ctf_link_add_strtab (ctf_file_t *, ctf_link_strtab_string_f *,
+extern int ctf_link_add_strtab (ctf_dict_t *, ctf_link_strtab_string_f *,
 				void *);
 typedef ctf_link_sym_t *ctf_link_iter_symbol_f (ctf_link_sym_t *dest,
 						void *arg);
-extern int ctf_link_shuffle_syms (ctf_file_t *, ctf_link_iter_symbol_f *,
+extern int ctf_link_shuffle_syms (ctf_dict_t *, ctf_link_iter_symbol_f *,
 				  void *);
-extern unsigned char *ctf_link_write (ctf_file_t *, size_t *size,
+extern unsigned char *ctf_link_write (ctf_dict_t *, size_t *size,
 				      size_t threshold);
 
 /* Specialist linker functions.  These functions are not used by ld, but can be
    used by other prgorams making use of the linker machinery for other purposes
    to customize its output.  */
-extern int ctf_link_add_cu_mapping (ctf_file_t *, const char *from,
+extern int ctf_link_add_cu_mapping (ctf_dict_t *, const char *from,
 				    const char *to);
-typedef char *ctf_link_memb_name_changer_f (ctf_file_t *,
+typedef char *ctf_link_memb_name_changer_f (ctf_dict_t *,
 					    const char *, void *);
 extern void ctf_link_set_memb_name_changer
-  (ctf_file_t *, ctf_link_memb_name_changer_f *, void *);
+  (ctf_dict_t *, ctf_link_memb_name_changer_f *, void *);
 
 extern void ctf_setdebug (int debug);
 extern int ctf_getdebug (void);

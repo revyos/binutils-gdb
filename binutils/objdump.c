@@ -4076,9 +4076,9 @@ make_ctfsect (const char *name, bfd_byte *data,
 /* Dump one CTF archive member.  */
 
 static int
-dump_ctf_archive_member (ctf_file_t *ctf, const char *name, void *arg)
+dump_ctf_archive_member (ctf_dict_t *ctf, const char *name, void *arg)
 {
-  ctf_file_t *parent = (ctf_file_t *) arg;
+  ctf_dict_t *parent = (ctf_dict_t *) arg;
   const char *things[] = {"Header", "Labels", "Data objects",
 			  "Function objects", "Variables", "Types", "Strings",
 			  ""};
@@ -4131,7 +4131,7 @@ dump_ctf (bfd *abfd, const char *sect_name, const char *parent_name)
   bfd_byte *ctfdata, *parentdata = NULL;
   bfd_size_type ctfsize, parentsize;
   ctf_sect_t ctfsect;
-  ctf_file_t *parent = NULL;
+  ctf_dict_t *parent = NULL;
   int err;
 
   if ((ctfdata = read_section_stabs (abfd, sect_name, &ctfsize, NULL)) == NULL)
@@ -4177,7 +4177,7 @@ dump_ctf (bfd *abfd, const char *sect_name, const char *parent_name)
   printf (_("Contents of CTF section %s:\n"), sanitize_string (sect_name));
 
   ctf_archive_iter (ctfa, dump_ctf_archive_member, parent);
-  ctf_file_close (parent);
+  ctf_dict_close (parent);
   ctf_close (ctfa);
   ctf_close (parenta);
   free (parentdata);

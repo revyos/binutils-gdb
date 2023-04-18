@@ -77,7 +77,7 @@ get_vlen_v2 (uint32_t info)
 }
 
 static inline ssize_t
-get_ctt_size_common (const ctf_file_t *fp _libctf_unused_,
+get_ctt_size_common (const ctf_dict_t *fp _libctf_unused_,
 		     const ctf_type_t *tp _libctf_unused_,
 		     ssize_t *sizep, ssize_t *incrementp, size_t lsize,
 		     size_t csize, size_t ctf_type_size,
@@ -105,7 +105,7 @@ get_ctt_size_common (const ctf_file_t *fp _libctf_unused_,
 }
 
 static ssize_t
-get_ctt_size_v1 (const ctf_file_t *fp, const ctf_type_t *tp,
+get_ctt_size_v1 (const ctf_dict_t *fp, const ctf_type_t *tp,
 		 ssize_t *sizep, ssize_t *incrementp)
 {
   ctf_type_v1_t *t1p = (ctf_type_v1_t *) tp;
@@ -119,7 +119,7 @@ get_ctt_size_v1 (const ctf_file_t *fp, const ctf_type_t *tp,
 /* Return the size that a v1 will be once it is converted to v2.  */
 
 static ssize_t
-get_ctt_size_v2_unconverted (const ctf_file_t *fp, const ctf_type_t *tp,
+get_ctt_size_v2_unconverted (const ctf_dict_t *fp, const ctf_type_t *tp,
 			     ssize_t *sizep, ssize_t *incrementp)
 {
   ctf_type_v1_t *t1p = (ctf_type_v1_t *) tp;
@@ -131,7 +131,7 @@ get_ctt_size_v2_unconverted (const ctf_file_t *fp, const ctf_type_t *tp,
 }
 
 static ssize_t
-get_ctt_size_v2 (const ctf_file_t *fp, const ctf_type_t *tp,
+get_ctt_size_v2 (const ctf_dict_t *fp, const ctf_type_t *tp,
 		 ssize_t *sizep, ssize_t *incrementp)
 {
   return (get_ctt_size_common (fp, tp, sizep, incrementp,
@@ -207,7 +207,7 @@ get_vbytes_v2 (unsigned short kind, ssize_t size, size_t vlen)
   return (get_vbytes_common (kind, size, vlen));
 }
 
-static const ctf_fileops_t ctf_fileops[] = {
+static const ctf_dictops_t ctf_dictops[] = {
   {NULL, NULL, NULL, NULL, NULL},
   /* CTF_VERSION_1 */
   {get_kind_v1, get_root_v1, get_vlen_v1, get_ctt_size_v1, get_vbytes_v1},
@@ -224,7 +224,7 @@ static const ctf_fileops_t ctf_fileops[] = {
   STT_OBJECT entry in the symbol table.  */
 
 static int
-init_symtab (ctf_file_t *fp, const ctf_header_t *hp,
+init_symtab (ctf_dict_t *fp, const ctf_header_t *hp,
 	     const ctf_sect_t *sp, const ctf_sect_t *strp)
 {
   const unsigned char *symp = sp->cts_data;
@@ -310,14 +310,14 @@ init_symtab (ctf_file_t *fp, const ctf_header_t *hp,
 }
 
 /* Reset the CTF base pointer and derive the buf pointer from it, initializing
-   everything in the ctf_file that depends on the base or buf pointers.
+   everything in the ctf_dict that depends on the base or buf pointers.
 
    The original gap between the buf and base pointers, if any -- the original,
    unconverted CTF header -- is kept, but its contents are not specified and are
    never used.  */
 
 static void
-ctf_set_base (ctf_file_t *fp, const ctf_header_t *hp, unsigned char *base)
+ctf_set_base (ctf_dict_t *fp, const ctf_header_t *hp, unsigned char *base)
 {
   fp->ctf_buf = base + (fp->ctf_buf - fp->ctf_base);
   fp->ctf_base = base;
@@ -358,11 +358,11 @@ ctf_set_base (ctf_file_t *fp, const ctf_header_t *hp, unsigned char *base)
    caller must ensure this has been done in advance.  */
 
 static void
-ctf_set_version (ctf_file_t *fp, ctf_header_t *cth, int ctf_version)
+ctf_set_version (ctf_dict_t *fp, ctf_header_t *cth, int ctf_version)
 {
   fp->ctf_version = ctf_version;
   cth->cth_version = ctf_version;
-  fp->ctf_fileops = &ctf_fileops[ctf_version];
+  fp->ctf_dictops = &ctf_dictops[ctf_version];
 }
 
 
@@ -396,7 +396,7 @@ upgrade_header (ctf_header_t *hp)
    Type kinds not checked here due to nonexistence in older formats:
       CTF_K_SLICE.  */
 static int
-upgrade_types_v1 (ctf_file_t *fp, ctf_header_t *cth)
+upgrade_types_v1 (ctf_dict_t *fp, ctf_header_t *cth)
 {
   const ctf_type_v1_t *tbuf;
   const ctf_type_v1_t *tend;
@@ -620,7 +620,7 @@ upgrade_types_v1 (ctf_file_t *fp, ctf_header_t *cth)
 
 /* Upgrade from any earlier version.  */
 static int
-upgrade_types (ctf_file_t *fp, ctf_header_t *cth)
+upgrade_types (ctf_dict_t *fp, ctf_header_t *cth)
 {
   switch (cth->cth_version)
     {
@@ -648,7 +648,7 @@ upgrade_types (ctf_file_t *fp, ctf_header_t *cth)
    recension of libctf supports upgrading.  */
 
 static int
-init_types (ctf_file_t *fp, ctf_header_t *cth)
+init_types (ctf_dict_t *fp, ctf_header_t *cth)
 {
   const ctf_type_t *tbuf;
   const ctf_type_t *tend;
@@ -1217,9 +1217,9 @@ flip_ctf (ctf_header_t *cth, unsigned char *buf)
   return flip_types (buf + cth->cth_typeoff, cth->cth_stroff - cth->cth_typeoff);
 }
 
-/* Set up the ctl hashes in a ctf_file_t.  Called by both writable and
+/* Set up the ctl hashes in a ctf_dict_t.  Called by both writable and
    non-writable dictionary initialization.  */
-void ctf_set_ctl_hashes (ctf_file_t *fp)
+void ctf_set_ctl_hashes (ctf_dict_t *fp)
 {
   /* Initialize the ctf_lookup_by_name top-level dictionary.  We keep an
      array of type name prefixes and the corresponding ctf_hash to use.  */
@@ -1242,7 +1242,7 @@ void ctf_set_ctl_hashes (ctf_file_t *fp)
 
 /* Open a CTF file, mocking up a suitable ctf_sect.  */
 
-ctf_file_t *ctf_simple_open (const char *ctfsect, size_t ctfsect_size,
+ctf_dict_t *ctf_simple_open (const char *ctfsect, size_t ctfsect_size,
 			     const char *symsect, size_t symsect_size,
 			     size_t symsect_entsize,
 			     const char *strsect, size_t strsect_size,
@@ -1256,7 +1256,7 @@ ctf_file_t *ctf_simple_open (const char *ctfsect, size_t ctfsect_size,
 /* Open a CTF file, mocking up a suitable ctf_sect and overriding the external
    strtab with a synthetic one.  */
 
-ctf_file_t *ctf_simple_open_internal (const char *ctfsect, size_t ctfsect_size,
+ctf_dict_t *ctf_simple_open_internal (const char *ctfsect, size_t ctfsect_size,
 				      const char *symsect, size_t symsect_size,
 				      size_t symsect_entsize,
 				      const char *strsect, size_t strsect_size,
@@ -1307,7 +1307,7 @@ ctf_file_t *ctf_simple_open_internal (const char *ctfsect, size_t ctfsect_size,
    be used directly by the debugger, or it can be used as the engine for
    ctf_fdopen() or ctf_open(), below.  */
 
-ctf_file_t *
+ctf_dict_t *
 ctf_bufopen (const ctf_sect_t *ctfsect, const ctf_sect_t *symsect,
 	     const ctf_sect_t *strsect, int *errp)
 {
@@ -1316,7 +1316,7 @@ ctf_bufopen (const ctf_sect_t *ctfsect, const ctf_sect_t *symsect,
 
 /* Like ctf_bufopen, but overriding the external strtab with a synthetic one.  */
 
-ctf_file_t *
+ctf_dict_t *
 ctf_bufopen_internal (const ctf_sect_t *ctfsect, const ctf_sect_t *symsect,
 		      const ctf_sect_t *strsect, ctf_dynhash_t *syn_strtab,
 		      int writable, int *errp)
@@ -1324,7 +1324,7 @@ ctf_bufopen_internal (const ctf_sect_t *ctfsect, const ctf_sect_t *symsect,
   const ctf_preamble_t *pp;
   size_t hdrsz = sizeof (ctf_header_t);
   ctf_header_t *hp;
-  ctf_file_t *fp;
+  ctf_dict_t *fp;
   int foreign_endian = 0;
   int err;
 
@@ -1393,10 +1393,10 @@ ctf_bufopen_internal (const ctf_sect_t *ctfsect, const ctf_sect_t *symsect,
   if (ctfsect->cts_size < hdrsz)
     return (ctf_set_open_errno (errp, ECTF_NOCTFBUF));
 
-  if ((fp = malloc (sizeof (ctf_file_t))) == NULL)
+  if ((fp = malloc (sizeof (ctf_dict_t))) == NULL)
     return (ctf_set_open_errno (errp, ENOMEM));
 
-  memset (fp, 0, sizeof (ctf_file_t));
+  memset (fp, 0, sizeof (ctf_dict_t));
 
   if (writable)
     fp->ctf_flags |= LCTF_RDWR;
@@ -1510,7 +1510,7 @@ ctf_bufopen_internal (const ctf_sect_t *ctfsect, const ctf_sect_t *symsect,
     }
 
   /* Once we have uncompressed and validated the CTF data buffer, we can
-     proceed with initializing the ctf_file_t we allocated above.
+     proceed with initializing the ctf_dict_t we allocated above.
 
      Nothing that depends on buf or base should be set directly in this function
      before the init_types() call, because it may be reallocated during
@@ -1622,25 +1622,25 @@ ctf_bufopen_internal (const ctf_sect_t *ctfsect, const ctf_sect_t *symsect,
 
 bad:
   ctf_set_open_errno (errp, err);
-  ctf_file_close (fp);
+  ctf_dict_close (fp);
   return NULL;
 }
 
 /* Close the specified CTF container and free associated data structures.  Note
-   that ctf_file_close() is a reference counted operation: if the specified file
+   that ctf_dict_close() is a reference counted operation: if the specified file
    is the parent of other active containers, its reference count will be greater
    than one and it will be freed later when no active children exist.  */
 
 void
-ctf_file_close (ctf_file_t *fp)
+ctf_dict_close (ctf_dict_t *fp)
 {
   ctf_dtdef_t *dtd, *ntd;
   ctf_dvdef_t *dvd, *nvd;
 
   if (fp == NULL)
-    return;		   /* Allow ctf_file_close(NULL) to simplify caller code.  */
+    return;		   /* Allow ctf_dict_close(NULL) to simplify caller code.  */
 
-  ctf_dprintf ("ctf_file_close(%p) refcnt=%u\n", (void *) fp, fp->ctf_refcnt);
+  ctf_dprintf ("ctf_dict_close(%p) refcnt=%u\n", (void *) fp, fp->ctf_refcnt);
 
   if (fp->ctf_refcnt > 1)
     {
@@ -1650,7 +1650,7 @@ ctf_file_close (ctf_file_t *fp)
 
   free (fp->ctf_dyncuname);
   free (fp->ctf_dynparname);
-  ctf_file_close (fp->ctf_parent);
+  ctf_dict_close (fp->ctf_parent);
 
   for (dtd = ctf_list_next (&fp->ctf_dtdefs); dtd != NULL; dtd = ntd)
     {
@@ -1718,28 +1718,28 @@ ctf_close (ctf_archive_t *arc)
   ctf_arc_close (arc);
 }
 
-/* Get the CTF archive from which this ctf_file_t is derived.  */
+/* Get the CTF archive from which this ctf_dict_t is derived.  */
 ctf_archive_t *
-ctf_get_arc (const ctf_file_t *fp)
+ctf_get_arc (const ctf_dict_t *fp)
 {
   return fp->ctf_archive;
 }
 
 /* Return the ctfsect out of the core ctf_impl.  Useful for freeing the
-   ctfsect's data * after ctf_file_close(), which is why we return the actual
+   ctfsect's data * after ctf_dict_close(), which is why we return the actual
    structure, not a pointer to it, since that is likely to become a pointer to
    freed data before the return value is used under the expected use case of
-   ctf_getsect()/ ctf_file_close()/free().  */
+   ctf_getsect()/ ctf_dict_close()/free().  */
 ctf_sect_t
-ctf_getdatasect (const ctf_file_t *fp)
+ctf_getdatasect (const ctf_dict_t *fp)
 {
   return fp->ctf_data;
 }
 
 /* Return the CTF handle for the parent CTF container, if one exists.
    Otherwise return NULL to indicate this container has no imported parent.  */
-ctf_file_t *
-ctf_parent_file (ctf_file_t *fp)
+ctf_dict_t *
+ctf_parent_file (ctf_dict_t *fp)
 {
   return fp->ctf_parent;
 }
@@ -1747,7 +1747,7 @@ ctf_parent_file (ctf_file_t *fp)
 /* Return the name of the parent CTF container, if one exists.  Otherwise
    return NULL to indicate this container is a root container.  */
 const char *
-ctf_parent_name (ctf_file_t *fp)
+ctf_parent_name (ctf_dict_t *fp)
 {
   return fp->ctf_parname;
 }
@@ -1755,7 +1755,7 @@ ctf_parent_name (ctf_file_t *fp)
 /* Set the parent name.  It is an error to call this routine without calling
    ctf_import() at some point.  */
 int
-ctf_parent_name_set (ctf_file_t *fp, const char *name)
+ctf_parent_name_set (ctf_dict_t *fp, const char *name)
 {
   if (fp->ctf_dynparname != NULL)
     free (fp->ctf_dynparname);
@@ -1769,14 +1769,14 @@ ctf_parent_name_set (ctf_file_t *fp, const char *name)
 /* Return the name of the compilation unit this CTF file applies to.  Usually
    non-NULL only for non-parent containers.  */
 const char *
-ctf_cuname (ctf_file_t *fp)
+ctf_cuname (ctf_dict_t *fp)
 {
   return fp->ctf_cuname;
 }
 
 /* Set the compilation unit name.  */
 int
-ctf_cuname_set (ctf_file_t *fp, const char *name)
+ctf_cuname_set (ctf_dict_t *fp, const char *name)
 {
   if (fp->ctf_dyncuname != NULL)
     free (fp->ctf_dyncuname);
@@ -1791,7 +1791,7 @@ ctf_cuname_set (ctf_file_t *fp, const char *name)
    to it in ctf_parent and incrementing its reference count.  Only one parent
    is allowed: if a parent already exists, it is replaced by the new parent.  */
 int
-ctf_import (ctf_file_t *fp, ctf_file_t *pfp)
+ctf_import (ctf_dict_t *fp, ctf_dict_t *pfp)
 {
   if (fp == NULL || fp == pfp || (pfp != NULL && pfp->ctf_refcnt == 0))
     return (ctf_set_errno (fp, EINVAL));
@@ -1802,7 +1802,7 @@ ctf_import (ctf_file_t *fp, ctf_file_t *pfp)
   if (fp->ctf_parent != NULL)
     {
       fp->ctf_parent->ctf_refcnt--;
-      ctf_file_close (fp->ctf_parent);
+      ctf_dict_close (fp->ctf_parent);
       fp->ctf_parent = NULL;
     }
 
@@ -1824,7 +1824,7 @@ ctf_import (ctf_file_t *fp, ctf_file_t *pfp)
 
 /* Set the data model constant for the CTF container.  */
 int
-ctf_setmodel (ctf_file_t *fp, int model)
+ctf_setmodel (ctf_dict_t *fp, int model)
 {
   const ctf_dmodel_t *dp;
 
@@ -1842,22 +1842,22 @@ ctf_setmodel (ctf_file_t *fp, int model)
 
 /* Return the data model constant for the CTF container.  */
 int
-ctf_getmodel (ctf_file_t *fp)
+ctf_getmodel (ctf_dict_t *fp)
 {
   return fp->ctf_dmodel->ctd_code;
 }
 
-/* The caller can hang an arbitrary pointer off each ctf_file_t using this
+/* The caller can hang an arbitrary pointer off each ctf_dict_t using this
    function.  */
 void
-ctf_setspecific (ctf_file_t *fp, void *data)
+ctf_setspecific (ctf_dict_t *fp, void *data)
 {
   fp->ctf_specific = data;
 }
 
 /* Retrieve the arbitrary pointer again.  */
 void *
-ctf_getspecific (ctf_file_t *fp)
+ctf_getspecific (ctf_dict_t *fp)
 {
   return fp->ctf_specific;
 }

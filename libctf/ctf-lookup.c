@@ -69,7 +69,7 @@ isqualifier (const char *s, size_t len)
    integers, floats, typedefs, and pointers to any of these named types.  */
 
 ctf_id_t
-ctf_lookup_by_name (ctf_file_t *fp, const char *name)
+ctf_lookup_by_name (ctf_dict_t *fp, const char *name)
 {
   static const char delimiters[] = " \t\n\r\v\f*";
 
@@ -194,7 +194,7 @@ err:
 
 typedef struct ctf_lookup_var_key
 {
-  ctf_file_t *clvk_fp;
+  ctf_dict_t *clvk_fp;
   const char *clvk_name;
 } ctf_lookup_var_key_t;
 
@@ -212,7 +212,7 @@ ctf_lookup_var (const void *key_, const void *memb_)
 /* Given a variable name, return the type of the variable with that name.  */
 
 ctf_id_t
-ctf_lookup_variable (ctf_file_t *fp, const char *name)
+ctf_lookup_variable (ctf_dict_t *fp, const char *name)
 {
   ctf_varent_t *ent;
   ctf_lookup_var_key_t key = { fp, name };
@@ -236,7 +236,7 @@ ctf_lookup_variable (ctf_file_t *fp, const char *name)
 /* Given a symbol table index, return the name of that symbol from the secondary
    string table, or the null string (never NULL).  */
 const char *
-ctf_lookup_symbol_name (ctf_file_t *fp, unsigned long symidx)
+ctf_lookup_symbol_name (ctf_dict_t *fp, unsigned long symidx)
 {
   const ctf_sect_t *sp = &fp->ctf_symtab;
   Elf64_Sym sym, *gsp;
@@ -271,7 +271,7 @@ ctf_lookup_symbol_name (ctf_file_t *fp, unsigned long symidx)
    by the corresponding entry in the symbol table.  */
 
 ctf_id_t
-ctf_lookup_by_symbol (ctf_file_t *fp, unsigned long symidx)
+ctf_lookup_by_symbol (ctf_dict_t *fp, unsigned long symidx)
 {
   const ctf_sect_t *sp = &fp->ctf_symtab;
   ctf_id_t type;
@@ -310,9 +310,9 @@ ctf_lookup_by_symbol (ctf_file_t *fp, unsigned long symidx)
    This function is not exported outside of the library.  */
 
 const ctf_type_t *
-ctf_lookup_by_id (ctf_file_t **fpp, ctf_id_t type)
+ctf_lookup_by_id (ctf_dict_t **fpp, ctf_id_t type)
 {
-  ctf_file_t *fp = *fpp;	/* Caller passes in starting CTF container.  */
+  ctf_dict_t *fp = *fpp;	/* Caller passes in starting CTF container.  */
   ctf_id_t idx;
 
   if ((fp->ctf_flags & LCTF_CHILD) && LCTF_TYPE_ISPARENT (fp, type)
@@ -354,7 +354,7 @@ ctf_lookup_by_id (ctf_file_t **fpp, ctf_id_t type)
    by the corresponding entry in the symbol table.  */
 
 int
-ctf_func_info (ctf_file_t *fp, unsigned long symidx, ctf_funcinfo_t *fip)
+ctf_func_info (ctf_dict_t *fp, unsigned long symidx, ctf_funcinfo_t *fip)
 {
   const ctf_sect_t *sp = &fp->ctf_symtab;
   const uint32_t *dp;
@@ -411,7 +411,7 @@ ctf_func_info (ctf_file_t *fp, unsigned long symidx, ctf_funcinfo_t *fip)
    by the corresponding entry in the symbol table.  */
 
 int
-ctf_func_args (ctf_file_t * fp, unsigned long symidx, uint32_t argc,
+ctf_func_args (ctf_dict_t * fp, unsigned long symidx, uint32_t argc,
 	       ctf_id_t * argv)
 {
   const uint32_t *dp;

@@ -109,15 +109,15 @@ typedef struct ctf_lookup
   ctf_names_t *ctl_hash;	/* Pointer to hash table for lookup.  */
 } ctf_lookup_t;
 
-typedef struct ctf_fileops
+typedef struct ctf_dictops
 {
   uint32_t (*ctfo_get_kind) (uint32_t);
   uint32_t (*ctfo_get_root) (uint32_t);
   uint32_t (*ctfo_get_vlen) (uint32_t);
-  ssize_t (*ctfo_get_ctt_size) (const ctf_file_t *, const ctf_type_t *,
+  ssize_t (*ctfo_get_ctt_size) (const ctf_dict_t *, const ctf_type_t *,
 				ssize_t *, ssize_t *);
   ssize_t (*ctfo_get_vbytes) (unsigned short, ssize_t, size_t);
-} ctf_fileops_t;
+} ctf_dictops_t;
 
 typedef struct ctf_list
 {
@@ -187,7 +187,7 @@ typedef struct ctf_dvdef
 
 typedef struct ctf_bundle
 {
-  ctf_file_t *ctb_file;		/* CTF container handle.  */
+  ctf_dict_t *ctb_file;		/* CTF container handle.  */
   ctf_id_t ctb_type;		/* CTF type identifier.  */
   ctf_dtdef_t *ctb_dtd;		/* CTF dynamic type definition (if any).  */
 } ctf_bundle_t;
@@ -225,24 +225,24 @@ typedef struct ctf_str_atom_ref
 
 typedef struct ctf_link_type_mapping_key
 {
-  ctf_file_t *cltm_fp;
+  ctf_dict_t *cltm_fp;
   ctf_id_t cltm_idx;
 } ctf_link_type_mapping_key_t;
 
-/* The ctf_file is the structure used to represent a CTF container to library
+/* The ctf_dict is the structure used to represent a CTF container to library
    clients, who see it only as an opaque pointer.  Modifications can therefore
    be made freely to this structure without regard to client versioning.  The
-   ctf_file_t typedef appears in <ctf-api.h> and declares a forward tag.
+   ctf_dict_t typedef appears in <ctf-api.h> and declares a forward tag.
 
-   NOTE: ctf_update() requires that everything inside of ctf_file either be an
+   NOTE: ctf_update() requires that everything inside of ctf_dict either be an
    immediate value, a pointer to dynamically allocated data *outside* of the
-   ctf_file itself, or a pointer to statically allocated data.  If you add a
-   pointer to ctf_file that points to something within the ctf_file itself,
+   ctf_dict itself, or a pointer to statically allocated data.  If you add a
+   pointer to ctf_dict that points to something within the ctf_dict itself,
    you must make corresponding changes to ctf_update().  */
 
-struct ctf_file
+struct ctf_dict
 {
-  const ctf_fileops_t *ctf_fileops; /* Version-specific file operations.  */
+  const ctf_dictops_t *ctf_dictops; /* Version-specific file operations.  */
   struct ctf_header *ctf_header;    /* The header from this CTF file.  */
   unsigned char ctf_openflags;	    /* Flags the file had when opened.  */
   ctf_sect_t ctf_data;		    /* CTF data from object file.  */
@@ -277,7 +277,7 @@ struct ctf_file
   const ctf_dmodel_t *ctf_dmodel; /* Data model pointer (see above).  */
   const char *ctf_cuname;	  /* Compilation unit name (if any).  */
   char *ctf_dyncuname;		  /* Dynamically allocated name of CU.  */
-  struct ctf_file *ctf_parent;	  /* Parent CTF container (if any).  */
+  struct ctf_dict *ctf_parent;	  /* Parent CTF container (if any).  */
   const char *ctf_parlabel;	  /* Label in parent container (if any).  */
   const char *ctf_parname;	  /* Basename of parent (if any).  */
   char *ctf_dynparname;		  /* Dynamically allocated name of parent.  */
@@ -293,7 +293,7 @@ struct ctf_file
   unsigned long ctf_dtoldid;	  /* Oldest id that has been committed.  */
   unsigned long ctf_snapshots;	  /* ctf_snapshot() plus ctf_update() count.  */
   unsigned long ctf_snapshot_lu;  /* ctf_snapshot() call count at last update.  */
-  ctf_archive_t *ctf_archive;	  /* Archive this ctf_file_t came from.  */
+  ctf_archive_t *ctf_archive;	  /* Archive this ctf_dict_t came from.  */
   ctf_dynhash_t *ctf_link_inputs; /* Inputs to this link.  */
   ctf_dynhash_t *ctf_link_outputs; /* Additional outputs from this link.  */
   ctf_dynhash_t *ctf_link_type_mapping; /* Map input types to output types.  */
@@ -307,12 +307,12 @@ struct ctf_file
   void *ctf_specific;		  /* Data for ctf_get/setspecific().  */
 };
 
-/* An abstraction over both a ctf_file_t and a ctf_archive_t.  */
+/* An abstraction over both a ctf_dict_t and a ctf_archive_t.  */
 
 struct ctf_archive_internal
 {
   int ctfi_is_archive;
-  ctf_file_t *ctfi_file;
+  ctf_dict_t *ctfi_file;
   struct ctf_archive *ctfi_archive;
   ctf_sect_t ctfi_symsect;
   ctf_sect_t ctfi_strsect;
@@ -342,29 +342,29 @@ struct ctf_archive_internal
 		       (fp, i, fp->ctf_flags & LCTF_CHILD))->dtd_data) : \
      (ctf_type_t *)((uintptr_t)(fp)->ctf_buf + (fp)->ctf_txlate[(i)]))
 
-#define LCTF_INFO_KIND(fp, info)	((fp)->ctf_fileops->ctfo_get_kind(info))
-#define LCTF_INFO_ISROOT(fp, info)	((fp)->ctf_fileops->ctfo_get_root(info))
-#define LCTF_INFO_VLEN(fp, info)	((fp)->ctf_fileops->ctfo_get_vlen(info))
+#define LCTF_INFO_KIND(fp, info)	((fp)->ctf_dictops->ctfo_get_kind(info))
+#define LCTF_INFO_ISROOT(fp, info)	((fp)->ctf_dictops->ctfo_get_root(info))
+#define LCTF_INFO_VLEN(fp, info)	((fp)->ctf_dictops->ctfo_get_vlen(info))
 #define LCTF_VBYTES(fp, kind, size, vlen) \
-  ((fp)->ctf_fileops->ctfo_get_vbytes(kind, size, vlen))
+  ((fp)->ctf_dictops->ctfo_get_vbytes(kind, size, vlen))
 
-static inline ssize_t ctf_get_ctt_size (const ctf_file_t *fp,
+static inline ssize_t ctf_get_ctt_size (const ctf_dict_t *fp,
 					const ctf_type_t *tp,
 					ssize_t *sizep,
 					ssize_t *incrementp)
 {
-  return (fp->ctf_fileops->ctfo_get_ctt_size (fp, tp, sizep, incrementp));
+  return (fp->ctf_dictops->ctfo_get_ctt_size (fp, tp, sizep, incrementp));
 }
 
 #define LCTF_CHILD	0x0001	/* CTF container is a child */
 #define LCTF_RDWR	0x0002	/* CTF container is writable */
 #define LCTF_DIRTY	0x0004	/* CTF container has been modified */
 
-extern ctf_names_t *ctf_name_table (ctf_file_t *, int);
-extern const ctf_type_t *ctf_lookup_by_id (ctf_file_t **, ctf_id_t);
-extern ctf_id_t ctf_lookup_by_rawname (ctf_file_t *, int, const char *);
-extern ctf_id_t ctf_lookup_by_rawhash (ctf_file_t *, ctf_names_t *, const char *);
-extern void ctf_set_ctl_hashes (ctf_file_t *);
+extern ctf_names_t *ctf_name_table (ctf_dict_t *, int);
+extern const ctf_type_t *ctf_lookup_by_id (ctf_dict_t **, ctf_id_t);
+extern ctf_id_t ctf_lookup_by_rawname (ctf_dict_t *, int, const char *);
+extern ctf_id_t ctf_lookup_by_rawhash (ctf_dict_t *, ctf_names_t *, const char *);
+extern void ctf_set_ctl_hashes (ctf_dict_t *);
 
 typedef unsigned int (*ctf_hash_fun) (const void *ptr);
 extern unsigned int ctf_hash_integer (const void *ptr);
@@ -382,9 +382,9 @@ typedef void (*ctf_hash_iter_f) (void *key, void *value, void *arg);
 typedef int (*ctf_hash_iter_remove_f) (void *key, void *value, void *arg);
 
 extern ctf_hash_t *ctf_hash_create (unsigned long, ctf_hash_fun, ctf_hash_eq_fun);
-extern int ctf_hash_insert_type (ctf_hash_t *, ctf_file_t *, uint32_t, uint32_t);
-extern int ctf_hash_define_type (ctf_hash_t *, ctf_file_t *, uint32_t, uint32_t);
-extern ctf_id_t ctf_hash_lookup_type (ctf_hash_t *, ctf_file_t *, const char *);
+extern int ctf_hash_insert_type (ctf_hash_t *, ctf_dict_t *, uint32_t, uint32_t);
+extern int ctf_hash_define_type (ctf_hash_t *, ctf_dict_t *, uint32_t, uint32_t);
+extern ctf_id_t ctf_hash_lookup_type (ctf_hash_t *, ctf_dict_t *, const char *);
 extern uint32_t ctf_hash_size (const ctf_hash_t *);
 extern void ctf_hash_destroy (ctf_hash_t *);
 
@@ -407,79 +407,79 @@ extern void ctf_list_prepend (ctf_list_t *, void *);
 extern void ctf_list_delete (ctf_list_t *, void *);
 extern int ctf_list_empty_p (ctf_list_t *lp);
 
-extern int ctf_dtd_insert (ctf_file_t *, ctf_dtdef_t *, int flag, int kind);
-extern void ctf_dtd_delete (ctf_file_t *, ctf_dtdef_t *);
-extern ctf_dtdef_t *ctf_dtd_lookup (const ctf_file_t *, ctf_id_t);
-extern ctf_dtdef_t *ctf_dynamic_type (const ctf_file_t *, ctf_id_t);
+extern int ctf_dtd_insert (ctf_dict_t *, ctf_dtdef_t *, int flag, int kind);
+extern void ctf_dtd_delete (ctf_dict_t *, ctf_dtdef_t *);
+extern ctf_dtdef_t *ctf_dtd_lookup (const ctf_dict_t *, ctf_id_t);
+extern ctf_dtdef_t *ctf_dynamic_type (const ctf_dict_t *, ctf_id_t);
 
-extern int ctf_dvd_insert (ctf_file_t *, ctf_dvdef_t *);
-extern void ctf_dvd_delete (ctf_file_t *, ctf_dvdef_t *);
-extern ctf_dvdef_t *ctf_dvd_lookup (const ctf_file_t *, const char *);
+extern int ctf_dvd_insert (ctf_dict_t *, ctf_dvdef_t *);
+extern void ctf_dvd_delete (ctf_dict_t *, ctf_dvdef_t *);
+extern ctf_dvdef_t *ctf_dvd_lookup (const ctf_dict_t *, const char *);
 
-extern void ctf_add_type_mapping (ctf_file_t *src_fp, ctf_id_t src_type,
-				  ctf_file_t *dst_fp, ctf_id_t dst_type);
-extern ctf_id_t ctf_type_mapping (ctf_file_t *src_fp, ctf_id_t src_type,
-				  ctf_file_t **dst_fp);
+extern void ctf_add_type_mapping (ctf_dict_t *src_fp, ctf_id_t src_type,
+				  ctf_dict_t *dst_fp, ctf_id_t dst_type);
+extern ctf_id_t ctf_type_mapping (ctf_dict_t *src_fp, ctf_id_t src_type,
+				  ctf_dict_t **dst_fp);
 
 extern void ctf_decl_init (ctf_decl_t *);
 extern void ctf_decl_fini (ctf_decl_t *);
-extern void ctf_decl_push (ctf_decl_t *, ctf_file_t *, ctf_id_t);
+extern void ctf_decl_push (ctf_decl_t *, ctf_dict_t *, ctf_id_t);
 
 _libctf_printflike_ (2, 3)
 extern void ctf_decl_sprintf (ctf_decl_t *, const char *, ...);
 extern char *ctf_decl_buf (ctf_decl_t *cd);
 
-extern const char *ctf_strptr (ctf_file_t *, uint32_t);
-extern const char *ctf_strraw (ctf_file_t *, uint32_t);
-extern const char *ctf_strraw_explicit (ctf_file_t *, uint32_t,
+extern const char *ctf_strptr (ctf_dict_t *, uint32_t);
+extern const char *ctf_strraw (ctf_dict_t *, uint32_t);
+extern const char *ctf_strraw_explicit (ctf_dict_t *, uint32_t,
 					ctf_strs_t *);
-extern int ctf_str_create_atoms (ctf_file_t *);
-extern void ctf_str_free_atoms (ctf_file_t *);
-extern uint32_t ctf_str_add (ctf_file_t *, const char *);
-extern uint32_t ctf_str_add_ref (ctf_file_t *, const char *, uint32_t *ref);
-extern int ctf_str_add_external (ctf_file_t *, const char *, uint32_t offset);
-extern void ctf_str_remove_ref (ctf_file_t *, const char *, uint32_t *ref);
-extern void ctf_str_rollback (ctf_file_t *, ctf_snapshot_id_t);
-extern void ctf_str_purge_refs (ctf_file_t *);
-extern ctf_strs_writable_t ctf_str_write_strtab (ctf_file_t *);
+extern int ctf_str_create_atoms (ctf_dict_t *);
+extern void ctf_str_free_atoms (ctf_dict_t *);
+extern uint32_t ctf_str_add (ctf_dict_t *, const char *);
+extern uint32_t ctf_str_add_ref (ctf_dict_t *, const char *, uint32_t *ref);
+extern int ctf_str_add_external (ctf_dict_t *, const char *, uint32_t offset);
+extern void ctf_str_remove_ref (ctf_dict_t *, const char *, uint32_t *ref);
+extern void ctf_str_rollback (ctf_dict_t *, ctf_snapshot_id_t);
+extern void ctf_str_purge_refs (ctf_dict_t *);
+extern ctf_strs_writable_t ctf_str_write_strtab (ctf_dict_t *);
 
 extern struct ctf_archive_internal *ctf_new_archive_internal
 	(int is_archive, struct ctf_archive *arc,
-	 ctf_file_t *fp, const ctf_sect_t *symsect,
+	 ctf_dict_t *fp, const ctf_sect_t *symsect,
 	 const ctf_sect_t *strsect, int *errp);
 extern struct ctf_archive *ctf_arc_open_internal (const char *, int *);
 extern void ctf_arc_close_internal (struct ctf_archive *);
 extern void *ctf_set_open_errno (int *, int);
-extern unsigned long ctf_set_errno (ctf_file_t *, int);
+extern unsigned long ctf_set_errno (ctf_dict_t *, int);
 
-extern ctf_file_t *ctf_simple_open_internal (const char *, size_t, const char *,
+extern ctf_dict_t *ctf_simple_open_internal (const char *, size_t, const char *,
 					     size_t, size_t,
 					     const char *, size_t,
 					     ctf_dynhash_t *, int, int *);
-extern ctf_file_t *ctf_bufopen_internal (const ctf_sect_t *, const ctf_sect_t *,
+extern ctf_dict_t *ctf_bufopen_internal (const ctf_sect_t *, const ctf_sect_t *,
 					 const ctf_sect_t *, ctf_dynhash_t *,
 					 int, int *);
-extern int ctf_serialize (ctf_file_t *);
+extern int ctf_serialize (ctf_dict_t *);
 
 _libctf_malloc_
 extern void *ctf_mmap (size_t length, size_t offset, int fd);
 extern void ctf_munmap (void *, size_t);
 extern ssize_t ctf_pread (int fd, void *buf, ssize_t count, off_t offset);
 
-extern void *ctf_realloc (ctf_file_t *, void *, size_t);
+extern void *ctf_realloc (ctf_dict_t *, void *, size_t);
 extern char *ctf_str_append (char *, const char *);
 extern char *ctf_str_append_noerr (char *, const char *);
 extern const char *ctf_strerror (int);
 
-extern ctf_id_t ctf_type_resolve_unsliced (ctf_file_t *, ctf_id_t);
-extern int ctf_type_kind_unsliced (ctf_file_t *, ctf_id_t);
+extern ctf_id_t ctf_type_resolve_unsliced (ctf_dict_t *, ctf_id_t);
+extern int ctf_type_kind_unsliced (ctf_dict_t *, ctf_id_t);
 
 _libctf_printflike_ (1, 2)
 extern void ctf_dprintf (const char *, ...);
 extern void libctf_init_debug (void);
 
 extern Elf64_Sym *ctf_sym_to_elf64 (const Elf32_Sym *src, Elf64_Sym *dst);
-extern const char *ctf_lookup_symbol_name (ctf_file_t *fp, unsigned long symidx);
+extern const char *ctf_lookup_symbol_name (ctf_dict_t *fp, unsigned long symidx);
 
 /* Variables, all underscore-prepended. */
 

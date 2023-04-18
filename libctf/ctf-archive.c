@@ -32,8 +32,8 @@
 #include <sys/mman.h>
 #endif
 
-static off_t arc_write_one_ctf (ctf_file_t * f, int fd, size_t threshold);
-static ctf_file_t *ctf_arc_open_by_offset (const struct ctf_archive *arc,
+static off_t arc_write_one_ctf (ctf_dict_t * f, int fd, size_t threshold);
+static ctf_dict_t *ctf_arc_open_by_offset (const struct ctf_archive *arc,
 					   const ctf_sect_t *symsect,
 					   const ctf_sect_t *strsect,
 					   size_t offset, int *errp);
@@ -45,12 +45,12 @@ static int arc_mmap_writeout (int fd, void *header, size_t headersz,
 static int arc_mmap_unmap (void *header, size_t headersz, const char **errmsg);
 
 /* Write out a CTF archive to the start of the file referenced by the passed-in
-   fd.  The entries in CTF_FILES are referenced by name: the names are passed in
-   the names array, which must have CTF_FILES entries.
+   fd.  The entries in ctf_dictS are referenced by name: the names are passed in
+   the names array, which must have ctf_dictS entries.
 
    Returns 0 on success, or an errno, or an ECTF_* value.  */
 int
-ctf_arc_write_fd (int fd, ctf_file_t **ctf_files, size_t ctf_file_cnt,
+ctf_arc_write_fd (int fd, ctf_dict_t **ctf_dicts, size_t ctf_dict_cnt,
 		  const char **names, size_t threshold)
 {
   const char *errmsg;
@@ -66,14 +66,14 @@ ctf_arc_write_fd (int fd, ctf_file_t **ctf_files, size_t ctf_file_cnt,
   struct ctf_archive_modent *modent;
 
   ctf_dprintf ("Writing CTF archive with %lu files\n",
-	       (unsigned long) ctf_file_cnt);
+	       (unsigned long) ctf_dict_cnt);
 
   /* Figure out the size of the mmap()ed header, including the
      ctf_archive_modent array.  We assume that all of this needs no
      padding: a likely assumption, given that it's all made up of
      uint64_t's.  */
   headersz = sizeof (struct ctf_archive)
-    + (ctf_file_cnt * sizeof (uint64_t) * 2);
+    + (ctf_dict_cnt * sizeof (uint64_t) * 2);
   ctf_dprintf ("headersz is %lu\n", (unsigned long) headersz);
 
   /* From now on we work in two pieces: an mmap()ed region from zero up to the
@@ -101,7 +101,7 @@ ctf_arc_write_fd (int fd, ctf_file_t **ctf_files, size_t ctf_file_cnt,
   /* Fill in everything we can, which is everything other than the name
      table offset.  */
   archdr->ctfa_magic = htole64 (CTFA_MAGIC);
-  archdr->ctfa_nfiles = htole64 (ctf_file_cnt);
+  archdr->ctfa_nfiles = htole64 (ctf_dict_cnt);
   archdr->ctfa_ctfs = htole64 (ctf_startoffs);
 
   /* We could validate that all CTF files have the same data model, but
@@ -112,8 +112,8 @@ ctf_arc_write_fd (int fd, ctf_file_t **ctf_files, size_t ctf_file_cnt,
      this case, but we must be sure not to dereference uninitialized
      memory.)  */
 
-  if (ctf_file_cnt > 0)
-    archdr->ctfa_model = htole64 (ctf_getmodel (ctf_files[0]));
+  if (ctf_dict_cnt > 0)
+    archdr->ctfa_model = htole64 (ctf_getmodel (ctf_dicts[0]));
 
   /* Now write out the CTFs: ctf_archive_modent array via the mapping,
      ctfs via write().  The names themselves have not been written yet: we
@@ -141,7 +141,7 @@ ctf_arc_write_fd (int fd, ctf_file_t **ctf_files, size_t ctf_file_cnt,
 
       strcpy (&nametbl[namesz], names[i]);
 
-      off = arc_write_one_ctf (ctf_files[i], fd, threshold);
+      off = arc_write_one_ctf (ctf_dicts[i], fd, threshold);
       if ((off < 0) && (off > -ECTF_BASE))
 	{
 	  errmsg = "ctf_arc_write(): Cannot determine file "
@@ -206,14 +206,14 @@ err:
   return errno;
 }
 
-/* Write out a CTF archive.  The entries in CTF_FILES are referenced by name:
-   the names are passed in the names array, which must have CTF_FILES entries.
+/* Write out a CTF archive.  The entries in ctf_dictS are referenced by name:
+   the names are passed in the names array, which must have ctf_dictS entries.
 
    If the filename is NULL, create a temporary file and return a pointer to it.
 
    Returns 0 on success, or an errno, or an ECTF_* value.  */
 int
-ctf_arc_write (const char *file, ctf_file_t ** ctf_files, size_t ctf_file_cnt,
+ctf_arc_write (const char *file, ctf_dict_t ** ctf_dicts, size_t ctf_dict_cnt,
 	       const char **names, size_t threshold)
 {
   int err;
@@ -226,7 +226,7 @@ ctf_arc_write (const char *file, ctf_file_t ** ctf_files, size_t ctf_file_cnt,
       return errno;
     }
 
-  err = ctf_arc_write_fd (fd, ctf_files, ctf_file_cnt, names, threshold);
+  err = ctf_arc_write_fd (fd, ctf_dicts, ctf_dict_cnt, names, threshold);
   if (err)
     goto err;
 
@@ -256,13 +256,13 @@ ctf_arc_write (const char *file, ctf_file_t ** ctf_files, size_t ctf_file_cnt,
    negative errno or ctf_errno value.  On error, the file position may no longer
    be at the end of the file.  */
 static off_t
-arc_write_one_ctf (ctf_file_t * f, int fd, size_t threshold)
+arc_write_one_ctf (ctf_dict_t * f, int fd, size_t threshold)
 {
   off_t off, end_off;
   uint64_t ctfsz = 0;
   char *ctfszp;
   size_t ctfsz_len;
-  int (*writefn) (ctf_file_t * fp, int fd);
+  int (*writefn) (ctf_dict_t * fp, int fd);
 
   if (ctf_serialize (f) < 0)
     return f->ctf_errno * -1;
@@ -342,12 +342,12 @@ search_modent_by_name (const void *key, const void *ent, void *arg)
 }
 
 /* Make a new struct ctf_archive_internal wrapper for a ctf_archive or a
-   ctf_file.  Closes ARC and/or FP on error.  Arrange to free the SYMSECT or
+   ctf_dict.  Closes ARC and/or FP on error.  Arrange to free the SYMSECT or
    STRSECT, as needed, on close.  */
 
 struct ctf_archive_internal *
 ctf_new_archive_internal (int is_archive, struct ctf_archive *arc,
-			  ctf_file_t *fp, const ctf_sect_t *symsect,
+			  ctf_dict_t *fp, const ctf_sect_t *symsect,
 			  const ctf_sect_t *strsect,
 			  int *errp)
 {
@@ -358,7 +358,7 @@ ctf_new_archive_internal (int is_archive, struct ctf_archive *arc,
       if (is_archive)
 	ctf_arc_close_internal (arc);
       else
-	ctf_file_close (fp);
+	ctf_dict_close (fp);
       return (ctf_set_open_errno (errp, errno));
     }
   arci->ctfi_is_archive = is_archive;
@@ -384,7 +384,7 @@ ctf_arc_bufopen (const ctf_sect_t *ctfsect, const ctf_sect_t *symsect,
 {
   struct ctf_archive *arc = NULL;
   int is_archive;
-  ctf_file_t *fp = NULL;
+  ctf_dict_t *fp = NULL;
 
   if (ctfsect->cts_size > sizeof (uint64_t) &&
       ((*(uint64_t *) ctfsect->cts_data) == CTFA_MAGIC))
@@ -483,7 +483,7 @@ ctf_arc_close (ctf_archive_t *arc)
   if (arc->ctfi_is_archive)
     ctf_arc_close_internal (arc->ctfi_archive);
   else
-    ctf_file_close (arc->ctfi_file);
+    ctf_dict_close (arc->ctfi_file);
   if (arc->ctfi_free_symsect)
     free ((void *) arc->ctfi_symsect.cts_data);
   free (arc->ctfi_data);
@@ -492,9 +492,9 @@ ctf_arc_close (ctf_archive_t *arc)
   free (arc);
 }
 
-/* Return the ctf_file_t with the given name, or NULL if none, setting 'err' if
+/* Return the ctf_dict_t with the given name, or NULL if none, setting 'err' if
    non-NULL.  A name of NULL means to open the default file.  */
-static ctf_file_t *
+static ctf_dict_t *
 ctf_arc_open_by_name_internal (const struct ctf_archive *arc,
 			       const ctf_sect_t *symsect,
 			       const ctf_sect_t *strsect,
@@ -529,13 +529,13 @@ ctf_arc_open_by_name_internal (const struct ctf_archive *arc,
 				 le64toh (modent->ctf_offset), errp);
 }
 
-/* Return the ctf_file_t with the given name, or NULL if none, setting 'err' if
+/* Return the ctf_dict_t with the given name, or NULL if none, setting 'err' if
    non-NULL.  A name of NULL means to open the default file.
 
    Use the specified string and symbol table sections.
 
    Public entry point.  */
-ctf_file_t *
+ctf_dict_t *
 ctf_arc_open_by_name_sections (const ctf_archive_t *arc,
 			       const ctf_sect_t *symsect,
 			       const ctf_sect_t *strsect,
@@ -544,7 +544,7 @@ ctf_arc_open_by_name_sections (const ctf_archive_t *arc,
 {
   if (arc->ctfi_is_archive)
     {
-      ctf_file_t *ret;
+      ctf_dict_t *ret;
       ret = ctf_arc_open_by_name_internal (arc->ctfi_archive, symsect, strsect,
 					   name, errp);
       if (ret)
@@ -560,16 +560,16 @@ ctf_arc_open_by_name_sections (const ctf_archive_t *arc,
     }
   arc->ctfi_file->ctf_archive = (ctf_archive_t *) arc;
 
-  /* Bump the refcount so that the user can ctf_file_close() it.  */
+  /* Bump the refcount so that the user can ctf_dict_close() it.  */
   arc->ctfi_file->ctf_refcnt++;
   return arc->ctfi_file;
 }
 
-/* Return the ctf_file_t with the given name, or NULL if none, setting 'err' if
+/* Return the ctf_dict_t with the given name, or NULL if none, setting 'err' if
    non-NULL.  A name of NULL means to open the default file.
 
    Public entry point.  */
-ctf_file_t *
+ctf_dict_t *
 ctf_arc_open_by_name (const ctf_archive_t *arc, const char *name, int *errp)
 {
   const ctf_sect_t *symsect = &arc->ctfi_symsect;
@@ -583,16 +583,16 @@ ctf_arc_open_by_name (const ctf_archive_t *arc, const char *name, int *errp)
   return ctf_arc_open_by_name_sections (arc, symsect, strsect, name, errp);
 }
 
-/* Return the ctf_file_t at the given ctfa_ctfs-relative offset, or NULL if
+/* Return the ctf_dict_t at the given ctfa_ctfs-relative offset, or NULL if
    none, setting 'err' if non-NULL.  */
-static ctf_file_t *
+static ctf_dict_t *
 ctf_arc_open_by_offset (const struct ctf_archive *arc,
 			const ctf_sect_t *symsect,
 			const ctf_sect_t *strsect, size_t offset,
 			int *errp)
 {
   ctf_sect_t ctfsect;
-  ctf_file_t *fp;
+  ctf_dict_t *fp;
 
   ctf_dprintf ("ctf_arc_open_by_offset(%lu): opening\n", (unsigned long) offset);
 
@@ -665,7 +665,7 @@ ctf_archive_iter_internal (const ctf_archive_t *wrapper,
 {
   int rc;
   size_t i;
-  ctf_file_t *f;
+  ctf_dict_t *f;
   struct ctf_archive_modent *modent;
   const char *nametbl;
 
@@ -685,11 +685,11 @@ ctf_archive_iter_internal (const ctf_archive_t *wrapper,
       f->ctf_archive = (ctf_archive_t *) wrapper;
       if ((rc = func (f, name, data)) != 0)
 	{
-	  ctf_file_close (f);
+	  ctf_dict_close (f);
 	  return rc;
 	}
 
-      ctf_file_close (f);
+      ctf_dict_close (f);
     }
   return 0;
 }

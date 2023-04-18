@@ -34,8 +34,8 @@
    the worst consequence if we do OOM is a bit of type duplication anyway.  */
 
 void
-ctf_add_type_mapping (ctf_file_t *src_fp, ctf_id_t src_type,
-		      ctf_file_t *dst_fp, ctf_id_t dst_type)
+ctf_add_type_mapping (ctf_dict_t *src_fp, ctf_id_t src_type,
+		      ctf_dict_t *dst_fp, ctf_id_t dst_type)
 {
   if (LCTF_TYPE_ISPARENT (src_fp, src_type) && src_fp->ctf_parent)
     src_fp = src_fp->ctf_parent;
@@ -76,10 +76,10 @@ ctf_add_type_mapping (ctf_file_t *src_fp, ctf_id_t src_type,
 /* Look up a type mapping: return 0 if none.  The DST_FP is modified to point to
    the parent if need be.  The ID returned is from the dst_fp's perspective.  */
 ctf_id_t
-ctf_type_mapping (ctf_file_t *src_fp, ctf_id_t src_type, ctf_file_t **dst_fp)
+ctf_type_mapping (ctf_dict_t *src_fp, ctf_id_t src_type, ctf_dict_t **dst_fp)
 {
   ctf_link_type_mapping_key_t key;
-  ctf_file_t *target_fp = *dst_fp;
+  ctf_dict_t *target_fp = *dst_fp;
   ctf_id_t dst_type = 0;
 
   if (LCTF_TYPE_ISPARENT (src_fp, src_type) && src_fp->ctf_parent)
@@ -141,13 +141,13 @@ static void ctf_arc_close_thunk (void *arc)
   ctf_arc_close ((ctf_archive_t *) arc);
 }
 
-static void ctf_file_close_thunk (void *file)
+static void ctf_dict_close_thunk (void *file)
 {
-  ctf_file_close ((ctf_file_t *) file);
+  ctf_dict_close ((ctf_dict_t *) file);
 }
 
 int
-ctf_link_add_ctf (ctf_file_t *fp, ctf_archive_t *ctf, const char *name)
+ctf_link_add_ctf (ctf_dict_t *fp, ctf_archive_t *ctf, const char *name)
 {
   char *dupname = NULL;
 
@@ -178,10 +178,10 @@ ctf_link_add_ctf (ctf_file_t *fp, ctf_archive_t *ctf, const char *name)
 /* Return a per-CU output CTF dictionary suitable for the given CU, creating and
    interning it if need be.  */
 
-static ctf_file_t *
-ctf_create_per_cu (ctf_file_t *fp, const char *filename, const char *cuname)
+static ctf_dict_t *
+ctf_create_per_cu (ctf_dict_t *fp, const char *filename, const char *cuname)
 {
-  ctf_file_t *cu_fp;
+  ctf_dict_t *cu_fp;
   const char *ctf_name = NULL;
   char *dynname = NULL;
 
@@ -227,7 +227,7 @@ ctf_create_per_cu (ctf_file_t *fp, const char *filename, const char *cuname)
 
  oom:
   free (dynname);
-  ctf_file_close (cu_fp);
+  ctf_dict_close (cu_fp);
   ctf_set_errno (fp, ENOMEM);
   return NULL;
 }
@@ -244,7 +244,7 @@ ctf_create_per_cu (ctf_file_t *fp, const char *filename, const char *cuname)
    every TO container present, even if empty, and malfunction otherwise.  */
 
 int
-ctf_link_add_cu_mapping (ctf_file_t *fp, const char *from, const char *to)
+ctf_link_add_cu_mapping (ctf_dict_t *fp, const char *from, const char *to)
 {
   int err;
   char *f, *t;
@@ -259,7 +259,7 @@ ctf_link_add_cu_mapping (ctf_file_t *fp, const char *from, const char *to)
   if (fp->ctf_link_outputs == NULL)
     fp->ctf_link_outputs = ctf_dynhash_create (ctf_hash_string,
 					       ctf_hash_eq_string, free,
-					       ctf_file_close_thunk);
+					       ctf_dict_close_thunk);
 
   if (fp->ctf_link_outputs == NULL)
     return ctf_set_errno (fp, ENOMEM);
@@ -297,7 +297,7 @@ ctf_link_add_cu_mapping (ctf_file_t *fp, const char *from, const char *to)
    The changer function accepts a name and should return a new
    dynamically-allocated name, or NULL if the name should be left unchanged.  */
 void
-ctf_link_set_memb_name_changer (ctf_file_t *fp,
+ctf_link_set_memb_name_changer (ctf_dict_t *fp,
 				ctf_link_memb_name_changer_f *changer,
 				void *arg)
 {
@@ -307,10 +307,10 @@ ctf_link_set_memb_name_changer (ctf_file_t *fp,
 
 typedef struct ctf_link_in_member_cb_arg
 {
-  ctf_file_t *out_fp;
+  ctf_dict_t *out_fp;
   const char *file_name;
-  ctf_file_t *in_fp;
-  ctf_file_t *main_input_fp;
+  ctf_dict_t *in_fp;
+  ctf_dict_t *main_input_fp;
   const char *cu_name;
   char *arcname;
   int done_main_member;
@@ -326,7 +326,7 @@ static int
 ctf_link_one_type (ctf_id_t type, int isroot _libctf_unused_, void *arg_)
 {
   ctf_link_in_member_cb_arg_t *arg = (ctf_link_in_member_cb_arg_t *) arg_;
-  ctf_file_t *per_cu_out_fp;
+  ctf_dict_t *per_cu_out_fp;
   int err;
 
   if (arg->share_mode != CTF_LINK_SHARE_UNCONFLICTED)
@@ -386,7 +386,7 @@ ctf_link_one_type (ctf_id_t type, int isroot _libctf_unused_, void *arg_)
 /* Check if we can safely add a variable with the given type to this container.  */
 
 static int
-check_variable (const char *name, ctf_file_t *fp, ctf_id_t type,
+check_variable (const char *name, ctf_dict_t *fp, ctf_id_t type,
 		ctf_dvdef_t **out_dvd)
 {
   ctf_dvdef_t *dvd;
@@ -413,9 +413,9 @@ static int
 ctf_link_one_variable (const char *name, ctf_id_t type, void *arg_)
 {
   ctf_link_in_member_cb_arg_t *arg = (ctf_link_in_member_cb_arg_t *) arg_;
-  ctf_file_t *per_cu_out_fp;
+  ctf_dict_t *per_cu_out_fp;
   ctf_id_t dst_type = 0;
-  ctf_file_t *check_fp;
+  ctf_dict_t *check_fp;
   ctf_dvdef_t *dvd;
 
   /* In unconflicted link mode, if this type is mapped to a type in the parent
@@ -478,7 +478,7 @@ ctf_link_one_variable (const char *name, ctf_id_t type, void *arg_)
    there is one and it's not the default: otherwise, we use the name of the
    input file.  */
 static int
-ctf_link_one_input_archive_member (ctf_file_t *in_fp, const char *name, void *arg_)
+ctf_link_one_input_archive_member (ctf_dict_t *in_fp, const char *name, void *arg_)
 {
   ctf_link_in_member_cb_arg_t *arg = (ctf_link_in_member_cb_arg_t *) arg_;
   int err = 0;
@@ -542,7 +542,7 @@ static void
 empty_link_type_mapping (void *key _libctf_unused_, void *value,
 			 void *arg _libctf_unused_)
 {
-  ctf_file_t *fp = (ctf_file_t *) value;
+  ctf_dict_t *fp = (ctf_dict_t *) value;
 
   if (fp->ctf_link_type_mapping)
     ctf_dynhash_empty (fp->ctf_link_type_mapping);
@@ -571,7 +571,7 @@ ctf_link_one_input_archive (void *key, void *value, void *arg_)
   if (ctf_link_one_input_archive_member (arg->main_input_fp,
 					 _CTF_SECTION, arg) < 0)
     {
-      ctf_file_close (arg->main_input_fp);
+      ctf_dict_close (arg->main_input_fp);
       return;
     }
   arg->done_main_member = 1;
@@ -585,7 +585,7 @@ ctf_link_one_input_archive (void *key, void *value, void *arg_)
 	 is zero if there was no actual error from the caller.  */
       ctf_set_errno (arg->out_fp, 0);
     }
-  ctf_file_close (arg->main_input_fp);
+  ctf_dict_close (arg->main_input_fp);
 
   /* Discard the now-unnecessary mapping table data.  */
   if (arg->out_fp->ctf_link_type_mapping)
@@ -596,7 +596,7 @@ ctf_link_one_input_archive (void *key, void *value, void *arg_)
 /* Merge types and variable sections in all files added to the link
    together.  */
 int
-ctf_link (ctf_file_t *fp, int share_mode)
+ctf_link (ctf_dict_t *fp, int share_mode)
 {
   ctf_link_in_member_cb_arg_t arg;
 
@@ -610,7 +610,7 @@ ctf_link (ctf_file_t *fp, int share_mode)
   if (fp->ctf_link_outputs == NULL)
     fp->ctf_link_outputs = ctf_dynhash_create (ctf_hash_string,
 					       ctf_hash_eq_string, free,
-					       ctf_file_close_thunk);
+					       ctf_dict_close_thunk);
 
   if (fp->ctf_link_outputs == NULL)
     return ctf_set_errno (fp, ENOMEM);
@@ -635,7 +635,7 @@ static void
 ctf_link_intern_extern_string (void *key _libctf_unused_, void *value,
 			       void *arg_)
 {
-  ctf_file_t *fp = (ctf_file_t *) value;
+  ctf_dict_t *fp = (ctf_dict_t *) value;
   ctf_link_out_string_cb_arg_t *arg = (ctf_link_out_string_cb_arg_t *) arg_;
 
   fp->ctf_flags |= LCTF_DIRTY;
@@ -650,7 +650,7 @@ ctf_link_intern_extern_string (void *key _libctf_unused_, void *value,
    files ctf_link() can create to get their strings dedupped against the ELF
    strtab properly.  */
 int
-ctf_link_add_strtab (ctf_file_t *fp, ctf_link_strtab_string_f *add_string,
+ctf_link_add_strtab (ctf_dict_t *fp, ctf_link_strtab_string_f *add_string,
 		     void *arg)
 {
   const char *str;
@@ -676,7 +676,7 @@ ctf_link_add_strtab (ctf_file_t *fp, ctf_link_strtab_string_f *add_string,
 
 /* Not yet implemented.  */
 int
-ctf_link_shuffle_syms (ctf_file_t *fp _libctf_unused_,
+ctf_link_shuffle_syms (ctf_dict_t *fp _libctf_unused_,
 		       ctf_link_iter_symbol_f *add_sym _libctf_unused_,
 		       void *arg _libctf_unused_)
 {
@@ -686,8 +686,8 @@ ctf_link_shuffle_syms (ctf_file_t *fp _libctf_unused_,
 typedef struct ctf_name_list_accum_cb_arg
 {
   char **names;
-  ctf_file_t *fp;
-  ctf_file_t **files;
+  ctf_dict_t *fp;
+  ctf_dict_t **files;
   size_t i;
   char **dynames;
   size_t ndynames;
@@ -698,9 +698,9 @@ static void
 ctf_accumulate_archive_names (void *key, void *value, void *arg_)
 {
   const char *name = (const char *) key;
-  ctf_file_t *fp = (ctf_file_t *) value;
+  ctf_dict_t *fp = (ctf_dict_t *) value;
   char **names;
-  ctf_file_t **files;
+  ctf_dict_t **files;
   ctf_name_list_accum_cb_arg_t *arg = (ctf_name_list_accum_cb_arg_t *) arg_;
 
   if ((names = realloc (arg->names, sizeof (char *) * ++(arg->i))) == NULL)
@@ -710,7 +710,7 @@ ctf_accumulate_archive_names (void *key, void *value, void *arg_)
       return;
     }
 
-  if ((files = realloc (arg->files, sizeof (ctf_file_t *) * arg->i)) == NULL)
+  if ((files = realloc (arg->files, sizeof (ctf_dict_t *) * arg->i)) == NULL)
     {
       (arg->i)--;
       ctf_set_errno (arg->fp, ENOMEM);
@@ -755,7 +755,7 @@ ctf_accumulate_archive_names (void *key, void *value, void *arg_)
 static void
 ctf_change_parent_name (void *key _libctf_unused_, void *value, void *arg)
 {
-  ctf_file_t *fp = (ctf_file_t *) value;
+  ctf_dict_t *fp = (ctf_dict_t *) value;
   const char *name = (const char *) arg;
 
   ctf_parent_name_set (fp, name);
@@ -765,12 +765,12 @@ ctf_change_parent_name (void *key _libctf_unused_, void *value, void *arg)
    (otherwise) into a new dynamically-allocated string, and return it.
    Members with sizes above THRESHOLD are compressed.  */
 unsigned char *
-ctf_link_write (ctf_file_t *fp, size_t *size, size_t threshold)
+ctf_link_write (ctf_dict_t *fp, size_t *size, size_t threshold)
 {
   ctf_name_list_accum_cb_arg_t arg;
   char **names;
   char *transformed_name = NULL;
-  ctf_file_t **files;
+  ctf_dict_t **files;
   FILE *f = NULL;
   int err;
   long fsize;
@@ -790,7 +790,7 @@ ctf_link_write (ctf_file_t *fp, size_t *size, size_t threshold)
 	}
     }
 
-  /* No extra outputs? Just write a simple ctf_file_t.  */
+  /* No extra outputs? Just write a simple ctf_dict_t.  */
   if (arg.i == 0)
     return ctf_write_mem (fp, size, threshold);
 
@@ -821,13 +821,13 @@ ctf_link_write (ctf_file_t *fp, size_t *size, size_t threshold)
     }
 
   if ((files = realloc (arg.files,
-			sizeof (struct ctf_file *) * (arg.i + 1))) == NULL)
+			sizeof (struct ctf_dict *) * (arg.i + 1))) == NULL)
     {
-      errloc = "ctf_file reallocation";
+      errloc = "ctf_dict reallocation";
       goto err_no;
     }
   arg.files = files;
-  memmove (&(arg.files[1]), arg.files, sizeof (ctf_file_t *) * (arg.i));
+  memmove (&(arg.files[1]), arg.files, sizeof (ctf_dict_t *) * (arg.i));
   arg.files[0] = fp;
 
   if ((f = tmpfile ()) == NULL)

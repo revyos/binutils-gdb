@@ -142,7 +142,7 @@ ctf_str_append_noerr (char *s, const char *append)
 
 /* A realloc() that fails noisily if called with any ctf_str_num_users.  */
 void *
-ctf_realloc (ctf_file_t *fp, void *ptr, size_t size)
+ctf_realloc (ctf_dict_t *fp, void *ptr, size_t size)
 {
   if (fp->ctf_str_num_refs > 0)
     {
@@ -168,7 +168,7 @@ ctf_set_open_errno (int *errp, int error)
    CTF_ERR / -1 for the benefit of the caller. */
 
 unsigned long
-ctf_set_errno (ctf_file_t * fp, int err)
+ctf_set_errno (ctf_dict_t * fp, int err)
 {
   fp->ctf_errno = err;
   return CTF_ERR;
