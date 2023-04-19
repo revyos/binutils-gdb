@@ -1217,7 +1217,7 @@ riscv_parse_std_ext (riscv_parse_subset_t *rps,
     {
       char subset[2] = {0, 0};
 
-      if (*p == 'x' || *p == 's' || *p == 'z')
+      if (*p == 'x' || *p == 's' || *p == 'h' || *p == 'z')
 	break;
 
       if (*p == '_')
@@ -1275,6 +1275,7 @@ riscv_get_prefix_class (const char *arch)
   switch (*arch)
     {
     case 's': return RV_ISA_CLASS_S;
+    case 'h': return RV_ISA_CLASS_H;
     case 'x': return RV_ISA_CLASS_X;
     case 'z': return RV_ISA_CLASS_Z;
     default: return RV_ISA_CLASS_UNKNOWN;
@@ -1477,7 +1478,7 @@ riscv_parse_prefixed_ext (riscv_parse_subset_t *rps,
 
 static const char * const riscv_std_z_ext_strtab[] =
 {
-  "zicbom", "zicbop", "zicboz", "zicsr", "zihintpause",
+  "zicbom", "zicbop", "zicboz", "zicsr", "zifencei", "zihintpause",
   "zfh",
   "zmmul",
   "zba", "zbb", "zbc", "zbs",

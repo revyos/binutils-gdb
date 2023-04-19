@@ -2901,6 +2901,9 @@ const struct riscv_ext_version riscv_ext_version_table[] =
 
 {"zihintpause", ISA_SPEC_CLASS_NONE, 1, 0},
 
+{"zifencei", ISA_SPEC_CLASS_20191213, 2, 0},
+{"zifencei", ISA_SPEC_CLASS_20190608, 2, 0},
+
 {"b",     ISA_SPEC_CLASS_NONE, 1, 0},
 {"zbb",   ISA_SPEC_CLASS_NONE, 1, 0},
 {"zba",   ISA_SPEC_CLASS_NONE, 1, 0},
