@@ -1199,6 +1199,8 @@ static struct riscv_supported_ext riscv_supported_std_z_ext[] =
   {"zksed",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
   {"zksh",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
   {"zkt",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
+  {"zvamo",             ISA_SPEC_CLASS_DRAFT,           1, 0,  0 },
+  {"zvlsseg",           ISA_SPEC_CLASS_DRAFT,           1, 0,  0 },
   {"zve32x",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
   {"zve32f",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
   {"zve32d",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
@@ -1255,6 +1257,12 @@ static struct riscv_supported_ext riscv_supported_vendor_x_ext[] =
   {"xtheadmemidx",	ISA_SPEC_CLASS_DRAFT,	1, 0, 0 },
   {"xtheadmempair",	ISA_SPEC_CLASS_DRAFT,	1, 0, 0 },
   {"xtheadsync",	ISA_SPEC_CLASS_DRAFT,	1, 0, 0 },
+  {"xthead",            ISA_SPEC_CLASS_DRAFT,   1, 0, 0 },
+  {"xtheadc",           ISA_SPEC_CLASS_DRAFT,   1, 0, 0 },
+  {"xtheade",           ISA_SPEC_CLASS_DRAFT,   1, 0, 0 },
+  {"xtheadse",          ISA_SPEC_CLASS_DRAFT,   1, 0, 0 },
+  {"xtheadvdot",        ISA_SPEC_CLASS_DRAFT,   1, 0, 0 },
+
   {NULL, 0, 0, 0, 0}
 };
 
@@ -2346,10 +2354,30 @@ riscv_multi_subset_supports (riscv_parse_subset_t *rps,
       return riscv_subset_supports (rps, "zksed");
     case INSN_CLASS_ZKSH:
       return riscv_subset_supports (rps, "zksh");
+    case INSN_CLASS_P_OR_ZPN:
+      return (riscv_subset_supports (rps, "p")
+	      || riscv_subset_supports (rps, "zpn"));
+    case INSN_CLASS_P_OR_ZPRVSFEXTRA:
+      return (riscv_subset_supports (rps, "p")
+	      || riscv_subset_supports (rps, "zprvsfextra"));
+    case INSN_CLASS_P_OR_ZPSFOPERAND:
+      return (riscv_subset_supports (rps, "p")
+	      || riscv_subset_supports (rps, "zpsfoperand"));
     case INSN_CLASS_V:
       return (riscv_subset_supports (rps, "v")
 	      || riscv_subset_supports (rps, "zve64x")
 	      || riscv_subset_supports (rps, "zve32x"));
+    case INSN_CLASS_V_07:
+      return (riscv_subset_supports (rps, "v")
+              && riscv_subset_supports (rps, "zvamo")
+              && riscv_subset_supports (rps, "zvlsseg"));
+    case INSN_CLASS_V_OR_ZVAMO:
+      return (riscv_subset_supports (rps, "a")
+	      && (riscv_subset_supports (rps, "v")
+		  || riscv_subset_supports (rps, "zvamo")));
+    case INSN_CLASS_V_OR_ZVLSSEG:
+      return (riscv_subset_supports (rps, "v")
+	      || riscv_subset_supports (rps, "zvlsseg"));
     case INSN_CLASS_ZVEF:
       return (riscv_subset_supports (rps, "v")
 	      || riscv_subset_supports (rps, "zve64d")
@@ -2383,6 +2411,24 @@ riscv_multi_subset_supports (riscv_parse_subset_t *rps,
       return riscv_subset_supports (rps, "xtheadmempair");
     case INSN_CLASS_XTHEADSYNC:
       return riscv_subset_supports (rps, "xtheadsync");
+    case INSN_CLASS_THEADC:
+      return (riscv_subset_supports (rps, "xtheadc")
+	      || riscv_subset_supports (rps, "xthead"));
+    case INSN_CLASS_THEADC_E:
+      return (riscv_subset_supports (rps, "xtheadc")
+	      || riscv_subset_supports (rps, "xtheade")
+	      || riscv_subset_supports (rps, "xthead"));
+    case INSN_CLASS_THEADC_E_SE:
+      return (riscv_subset_supports (rps, "xtheadc")
+	      || riscv_subset_supports (rps, "xtheade")
+	      || riscv_subset_supports (rps, "xtheadse")
+	      || riscv_subset_supports (rps, "xthead"));
+    case INSN_CLASS_THEADE:
+      return (riscv_subset_supports (rps, "xtheade")
+	      || riscv_subset_supports (rps, "xthead"));
+    case INSN_CLASS_THEADVDOT:
+      return (riscv_subset_supports (rps, "v")
+	      && riscv_subset_supports (rps, "xtheadvdot"));
     default:
       rps->error_handler
         (_("internal: unreachable INSN_CLASS_*"));
@@ -2509,8 +2555,20 @@ riscv_multi_subset_supports_ext (riscv_parse_subset_t *rps,
       return "zksed";
     case INSN_CLASS_ZKSH:
       return "zksh";
+    case INSN_CLASS_P_OR_ZPN:
+      return _("p' or `zpn");
+    case INSN_CLASS_P_OR_ZPRVSFEXTRA:
+      return _("p' or `zprvsfextra");
+    case INSN_CLASS_P_OR_ZPSFOPERAND:
+      return _("p' or `zpsfoperand");
     case INSN_CLASS_V:
       return _("v' or `zve64x' or `zve32x");
+    case INSN_CLASS_V_07:
+      return _("v' and `zvamo' and `zvlsseg");
+    case INSN_CLASS_V_OR_ZVAMO:
+      return _("a' and `v', or `a' and `zvamo");
+    case INSN_CLASS_V_OR_ZVLSSEG:
+      return _("v' or `zvlsseg");
     case INSN_CLASS_ZVEF:
       return _("v' or `zve64d' or `zve64f' or `zve32f");
     case INSN_CLASS_SVINVAL:
@@ -2541,6 +2599,16 @@ riscv_multi_subset_supports_ext (riscv_parse_subset_t *rps,
       return "xtheadmempair";
     case INSN_CLASS_XTHEADSYNC:
       return "xtheadsync";
+    case INSN_CLASS_THEADC:
+      return _("xtheadc' or `xthead");
+    case INSN_CLASS_THEADC_E:
+      return _("xtheadc' or `xtheade' or `xthead");
+    case INSN_CLASS_THEADC_E_SE:
+      return _("xtheadc' or `xtheade' or `xtheadse' or `xthead");
+    case INSN_CLASS_THEADE:
+      return _("xtheade' or `xthead");
+    case INSN_CLASS_THEADVDOT:
+      return _("v' and `xtheadvdot");
     default:
       rps->error_handler
         (_("internal: unreachable INSN_CLASS_*"));

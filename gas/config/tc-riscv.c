@@ -69,6 +69,7 @@ enum riscv_csr_class
   CSR_CLASS_F,		/* f-ext only */
   CSR_CLASS_ZKR,	/* zkr only */
   CSR_CLASS_V,		/* rvv only */
+  CSR_CLASS_THEAD,      /* thead CSR */
   CSR_CLASS_DEBUG,	/* debug CSR */
   CSR_CLASS_H,		/* hypervisor */
   CSR_CLASS_H_32,	/* hypervisor, rv32 only */
@@ -1041,7 +1042,10 @@ riscv_csr_address (const char *csr_name,
       extension = "zkr";
       break;
     case CSR_CLASS_V:
-      extension = "zve32x";
+      extension = "v";
+      break;
+    case CSR_CLASS_THEAD:
+      extension = "thead";
       break;
     case CSR_CLASS_SMAIA_32:
       is_rv32_only = true;
