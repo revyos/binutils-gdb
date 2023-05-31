@@ -1555,37 +1555,37 @@
 .*Info: macro .*
 .*Warning: invalid CSR `seed', needs `zkr' extension
 .*Info: macro .*
-.*Warning: invalid CSR `vstart', needs `zve32x' extension
+.*Warning: invalid CSR `vstart', needs `v' extension
 .*Info: macro .*
-.*Warning: invalid CSR `vstart', needs `zve32x' extension
+.*Warning: invalid CSR `vstart', needs `v' extension
 .*Info: macro .*
-.*Warning: invalid CSR `vxsat', needs `zve32x' extension
+.*Warning: invalid CSR `vxsat', needs `v' extension
 .*Info: macro .*
-.*Warning: invalid CSR `vxsat', needs `zve32x' extension
+.*Warning: invalid CSR `vxsat', needs `v' extension
 .*Info: macro .*
-.*Warning: invalid CSR `vxrm', needs `zve32x' extension
+.*Warning: invalid CSR `vxrm', needs `v' extension
 .*Info: macro .*
-.*Warning: invalid CSR `vxrm', needs `zve32x' extension
+.*Warning: invalid CSR `vxrm', needs `v' extension
 .*Info: macro .*
-.*Warning: invalid CSR `vcsr', needs `zve32x' extension
+.*Warning: invalid CSR `vcsr', needs `v' extension
 .*Info: macro .*
-.*Warning: invalid CSR `vcsr', needs `zve32x' extension
+.*Warning: invalid CSR `vcsr', needs `v' extension
 .*Info: macro .*
-.*Warning: invalid CSR `vl', needs `zve32x' extension
+.*Warning: invalid CSR `vl', needs `v' extension
 .*Info: macro .*
-.*Warning: invalid CSR `vl', needs `zve32x' extension
+.*Warning: invalid CSR `vl', needs `v' extension
 .*Info: macro .*
 .*Warning: read-only CSR is written `csrw vl,a1'
 .*Info: macro .*
-.*Warning: invalid CSR `vtype', needs `zve32x' extension
+.*Warning: invalid CSR `vtype', needs `v' extension
 .*Info: macro .*
-.*Warning: invalid CSR `vtype', needs `zve32x' extension
+.*Warning: invalid CSR `vtype', needs `v' extension
 .*Info: macro .*
 .*Warning: read-only CSR is written `csrw vtype,a1'
 .*Info: macro .*
-.*Warning: invalid CSR `vlenb', needs `zve32x' extension
+.*Warning: invalid CSR `vlenb', needs `v' extension
 .*Info: macro .*
-.*Warning: invalid CSR `vlenb', needs `zve32x' extension
+.*Warning: invalid CSR `vlenb', needs `v' extension
 .*Info: macro .*
 .*Warning: read-only CSR is written `csrw vlenb,a1'
 .*Info: macro .*
