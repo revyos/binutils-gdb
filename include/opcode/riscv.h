@@ -35,6 +35,8 @@ static inline unsigned int riscv_insn_length (insn_t insn)
     return 4;
   if ((insn & 0x3f) == 0x1f) /* 48-bit instructions.  */
     return 6;
+  if ((insn & 0x7f) == 0x7f) /* p extensions.  */
+    return 4;
   if ((insn & 0x7f) == 0x3f) /* 64-bit instructions.  */
     return 8;
   /* 80- ... 176-bit instructions.  */
@@ -106,6 +108,14 @@ static inline unsigned int riscv_insn_length (insn_t insn)
   (RV_X(x, 20, 10))
 #define EXTRACT_RVV_VC_IMM(x) \
   (RV_X(x, 20, 11))
+#define EXTRACT_T_HEAD_EXT_MIMM(x) \
+  (RV_X(x, 26, 6))
+#define EXTRACT_T_HEAD_EXT_LIMM(x) \
+  (RV_X(x, 20, 6))
+#define EXTRACT_T_HEAD_LR_IMM(x) \
+  (RV_X(x, 25, 2))
+#define EXTRACT_T_HEAD_IMM(x,nbit,at) \
+  (RV_X(x, at, nbit))
 
 #define ENCODE_ITYPE_IMM(x) \
   (RV_X(x, 0, 12) << 20)
@@ -151,6 +161,16 @@ static inline unsigned int riscv_insn_length (insn_t insn)
   (RV_X(x, 0, 10) << 20)
 #define ENCODE_RVV_VC_IMM(x) \
   (RV_X(x, 0, 11) << 20)
+#define ENCODE_T_HEAD_EXT_MIMM(x) \
+  (RV_X(x, 0, 6) << 26)
+#define ENCODE_T_HEAD_EXT_LIMM(x) \
+  (RV_X(x, 0, 6) << 20)
+#define ENCODE_T_HEAD_LR_IMM(x) \
+  (RV_X(x, 0, 2) << 25)
+#define ENCODE_T_HEAD_IMM(x,nbit,at) \
+  (RV_X(x, 0, nbit) << at)
+#define ENCODE_RVV_VC_IMM(x) \
+  (RV_X(x, 0, 11) << 20)
 
 #define VALID_ITYPE_IMM(x) (EXTRACT_ITYPE_IMM(ENCODE_ITYPE_IMM(x)) == (x))
 #define VALID_STYPE_IMM(x) (EXTRACT_STYPE_IMM(ENCODE_STYPE_IMM(x)) == (x))
@@ -176,6 +196,10 @@ static inline unsigned int riscv_insn_length (insn_t insn)
 #define VALID_CJTYPE_IMM(x) (EXTRACT_CJTYPE_IMM(ENCODE_CJTYPE_IMM(x)) == (x))
 #define VALID_RVV_VB_IMM(x) (EXTRACT_RVV_VB_IMM(ENCODE_RVV_VB_IMM(x)) == (x))
 #define VALID_RVV_VC_IMM(x) (EXTRACT_RVV_VC_IMM(ENCODE_RVV_VC_IMM(x)) == (x))
+#define VALID_T_HEAD_EXT_MIMM(x) (EXTRACT_T_HEAD_EXT_MIMM(ENCODE_T_HEAD_EXT_MIMM(x)) == (x))
+#define VALID_T_HEAD_EXT_LIMM(x) (EXTRACT_T_HEAD_EXT_LIMM(ENCODE_T_HEAD_EXT_LIMM(x)) == (x))
+#define VALID_T_HEAD_LR_IMM(x) (EXTRACT_T_HEAD_LR_IMM(ENCODE_T_HEAD_LR_IMM(x)) == (x))
+#define VALID_T_HEAD_EXT_IMM(x,nbit,at) (EXTRACT_T_HEAD_IMM(ENCODE_T_HEAD_IMM(x,nbit,at),nbit,at) == (x))
 
 #define RISCV_RTYPE(insn, rd, rs1, rs2) \
   ((MATCH_ ## insn) | ((rd) << OP_SH_RD) | ((rs1) << OP_SH_RS1) | ((rs2) << OP_SH_RS2))
@@ -306,6 +330,34 @@ static inline unsigned int riscv_insn_length (insn_t insn)
 
 #define NVECR 32
 #define NVECM 1
+
+/* RVV 0.7.  */
+#define OP_MASK_VLMUL07                0x3
+#define OP_SH_VLMUL07          0
+#define OP_MASK_VSEW07          0x7
+#define OP_SH_VSEW07            2
+#define OP_MASK_VEDIV07         0x3
+#define OP_SH_VEDIV07           5
+#define OP_MASK_VTYPE_RES07     0xf
+#define OP_SH_VTYPE_RES07       7
+
+/* T-HEAD extended fields.  */
+#define OP_MASK_T_HEAD_EXT_MSB 0x3f
+#define OP_SH_T_HEAD_EXT_MSB   26
+#define OP_MASK_T_HEAD_EXT_LSB 0x3f
+#define OP_SH_T_HEAD_EXT_LSB   20
+#define OP_MASK_T_HEAD_LR_IMM  0x3
+#define OP_SH_T_HEAD_LR_IMM    25
+
+/* RVP fields.  */
+#define OP_MASK_PD              0x1f
+#define OP_SH_PD                7
+#define OP_MASK_PS1             0x1f
+#define OP_SH_PS1               15
+#define OP_MASK_PS2             0x1f
+#define OP_SH_PS2               20
+#define OP_MASK_PS3             0x1f
+#define OP_SH_PS3               27
 
 /* ABI names for selected x-registers.  */
 
@@ -503,6 +555,9 @@ struct riscv_opcode
 #define INSN_8_BYTE		0x00000040
 #define INSN_16_BYTE		0x00000050
 
+/* Instruction has thead patch.  */
+#define INSN_PATCH		0x00800000
+
 /* Instruction is actually a macro.  It should be ignored by the
    disassembler, and requires special treatment by the assembler.  */
 #define INSN_MACRO		0xffffffff
@@ -567,6 +622,7 @@ extern const char * const riscv_vta[2];
 extern const char * const riscv_vma[2];
 
 extern const struct riscv_opcode riscv_opcodes[];
+extern const struct riscv_opcode riscv_v_07_opcodes[];
 extern const struct riscv_opcode riscv_insn_types[];
 
 #endif /* _RISCV_H_ */

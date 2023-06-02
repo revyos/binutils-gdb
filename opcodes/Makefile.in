@@ -505,6 +505,7 @@ TARGET64_LIBOPCODES_CFILES = \
 	nfp-dis.c \
 	riscv-dis.c \
 	riscv-opc.c \
+	riscv-opc-v-07.c \
 	tilegx-dis.c \
 	tilegx-opc.c
 
@@ -1028,6 +1029,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pru-opc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/riscv-dis.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/riscv-opc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/riscv-opc-v-07.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rl78-decode.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rl78-dis.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rx-decode.Plo@am__quote@

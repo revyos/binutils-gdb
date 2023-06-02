@@ -113,6 +113,7 @@ TARGET64_LIBOPCODES_CFILES = \
 	nfp-dis.c \
 	riscv-dis.c \
 	riscv-opc.c \
+	riscv-opc-v-07.c \
 	tilegx-dis.c \
 	tilegx-opc.c
 

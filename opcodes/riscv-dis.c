@@ -32,6 +32,10 @@
 #include <stdint.h>
 #include <ctype.h>
 
+#define RISCV_VECTOR_VERSION(major,minor) ((major << 16) | minor)
+
+static unsigned int riscv_vector_version = RISCV_VECTOR_VERSION(1,0);
+
 /* Current XLEN for the disassembler.  */
 static unsigned xlen = 0;
 
@@ -147,6 +151,13 @@ parse_riscv_dis_option (const char *option)
 				   "the elf privilege attribute is %s"),
 				 option, value, name);
 	}
+    }
+	else if (strcmp (option, "vector-version") == 0)
+    {
+      if (strcmp (value, "1.0") == 0)
+	riscv_vector_version = RISCV_VECTOR_VERSION(1,0);
+      else if (strcmp (value, "0.7") == 0)
+	riscv_vector_version = RISCV_VECTOR_VERSION(0,7);
     }
   else
     {
@@ -369,6 +380,12 @@ print_insn_args (const char *oparg, insn_t l, bfd_vma pc, disassemble_info *info
 		unsigned int imm_vta = EXTRACT_OPERAND (VTA, imm);
 		unsigned int imm_vma = EXTRACT_OPERAND (VMA, imm);
 		unsigned int imm_vtype_res = (imm >> 8);
+
+		if (RISCV_VECTOR_VERSION(0,7) == riscv_vector_version)
+		  {
+		    imm_vlmul = EXTRACT_OPERAND (VLMUL07, imm);
+		    imm_vsew = EXTRACT_OPERAND (VSEW07, imm);
+		  }
 
 		if (imm_vsew < ARRAY_SIZE (riscv_vsew)
 		    && imm_vlmul < ARRAY_SIZE (riscv_vlmul)
@@ -605,11 +622,34 @@ print_insn_args (const char *oparg, insn_t l, bfd_vma pc, disassemble_info *info
 		case 'u': /* 'XuN@S' ... N-bit unsigned immediate at bit S.  */
 		  sign = false;
 		  goto print_imm;
+		case 'P':
+		  {
+		    switch (*++oparg)
+		      {
+			case 'd':
+			  print (info->stream, dis_style_register, "%s",
+				 riscv_gpr_names[EXTRACT_OPERAND (PD, l)]);
+			  break;
+			case 's':
+			  print (info->stream, dis_style_register, "%s",
+				 riscv_gpr_names[EXTRACT_OPERAND (PS1, l)]);
+			  break;
+			case 't':
+			  print (info->stream, dis_style_register, "%s",
+				 riscv_gpr_names[EXTRACT_OPERAND (PS2, l)]);
+			  break;
+			case 'r':
+			  print (info->stream, dis_style_register, "%s",
+				 riscv_gpr_names[EXTRACT_OPERAND (PS3, l)]);
+			  break;
+		      }
+		  }
+		  break;
 		print_imm:
-		  n = strtol (oparg + 1, (char **)&oparg, 10);
+		  n = strtol (oparg + 1, (char **)(char **)&oparg, 10);
 		  if (*oparg != '@')
 		    goto undefined_modifier;
-		  s = strtol (oparg + 1, (char **)&oparg, 10);
+		  s = strtol (oparg + 1, (char **)(char **)&oparg, 10);
 		  oparg--;
 
 		  if (!sign)
@@ -624,6 +664,7 @@ print_insn_args (const char *oparg, insn_t l, bfd_vma pc, disassemble_info *info
 	      }
 	  }
 	  break;
+
 	default:
 	undefined_modifier:
 	  /* xgettext:c-format */
@@ -1112,6 +1153,9 @@ riscv_get_disassembler (bfd *abfd)
 
   riscv_release_subset_list (&riscv_subsets);
   riscv_parse_subset (&riscv_rps_dis, default_arch);
+  /* Check RVV 0.7.  */
+  if (strstr(default_arch, "v0p7"))
+	riscv_vector_version  = RISCV_VECTOR_VERSION(0,7);
   return print_insn_riscv;
 }
 

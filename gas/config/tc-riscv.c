@@ -759,6 +759,19 @@ move_insn (struct riscv_cl_insn *insn, fragS *frag, long where)
   install_insn (insn);
 }
 
+/* pow(2, n).  */
+static inline int pow2 (int n)
+{
+  int v = 1;
+  int i = 0;
+
+  for (i = 0; i < n; i++) {
+      v <<= 1;
+  }
+
+  return v;
+}
+
 /* Add INSN to the end of the output.  */
 
 static void
@@ -1416,6 +1429,20 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
 
 		  USE_IMM (n, s);
 		  break;
+		case 'P': /* RV-P */
+	        switch (*++oparg)
+		  {
+		    case 'd': USE_BITS (OP_MASK_PD, OP_SH_PD); break;
+		    case 's': USE_BITS (OP_MASK_PS1, OP_SH_PS1); break;
+		    case 't': USE_BITS (OP_MASK_PS2, OP_SH_PS2); break;
+		    case 'r': USE_BITS (OP_MASK_PS3, OP_SH_PS3); break;
+		    case 'u': USE_BITS (OP_MASK_PS1, OP_SH_PS1);
+			      USE_BITS (OP_MASK_PS2, OP_SH_PS2); break;
+		    default:
+			    as_bad (_("internal: bad RISC-V opcode (unknown operand type `XP'): %s %s"),
+				    opc->name, opc->args);
+		  }
+		break;
 		default:
 		  goto unknown_validate_operand;
 	      }
@@ -1626,6 +1653,7 @@ macro_build (expressionS *ep, const char *name, const char *fmt, ...)
   struct riscv_cl_insn insn;
   bfd_reloc_code_real_type r;
   va_list args;
+  expressionS ep_tmp;
   const char *fmtStart;
 
   va_start (args, fmt);
@@ -3460,6 +3488,46 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 		    case 'u': /* 'XuN@S' ... N-bit unsigned immediate at bit S.  */
 		      sign = false;
 		      goto parse_imm;
+			case 'P': /* RVP */
+		    switch (*++oparg)
+		      {
+		        case 'd': /* PD */
+			  if (!reg_lookup (&asarg, RCLASS_GPR, &regno))
+			    break;
+			  INSERT_OPERAND (PD, *ip, regno);
+			continue;
+
+		        case 's': /* PS1 */
+			  if (!reg_lookup (&asarg, RCLASS_GPR, &regno))
+			    break;
+			  INSERT_OPERAND (PS1, *ip, regno);
+			  continue;
+
+		        case 't': /* PS2 */
+		          if (!reg_lookup (&asarg, RCLASS_GPR, &regno))
+		            break;
+		          INSERT_OPERAND (PS2, *ip, regno);
+
+		          continue;
+
+		        case 'r': /* PS3 */
+		          if (!reg_lookup (&asarg, RCLASS_GPR, &regno))
+		            break;
+		          INSERT_OPERAND (PS3, *ip, regno);
+
+		          continue;
+
+			case 'u': /* RS1 == RS2 */
+			  if (!reg_lookup (&asarg, RCLASS_GPR, &regno))
+			    break;
+			  INSERT_OPERAND (PS1, *ip, regno);
+			  INSERT_OPERAND (PS2, *ip, regno);
+			  continue;
+
+
+		        default:
+			  break;
+		    }
 		    parse_imm:
 		      n = strtol (oparg + 1, (char **)&oparg, 10);
 		      if (*oparg != '@')
@@ -3490,6 +3558,7 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 		  }
 	      }
 	      break;
+
 	    default:
 	    unknown_riscv_ip_operand:
 	      as_fatal (_("internal: unknown argument type `%s'"),
