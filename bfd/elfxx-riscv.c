@@ -1030,6 +1030,15 @@ check_implicit_for_i (const char *implicit ATTRIBUTE_UNUSED,
 	      && subset->minor_version < 1));
 }
 
+/* Add the vector IMPLICIT only when the version of SUBSET more than 0.7.  */
+
+static bool
+check_implicit_for_v (const char *implicit ATTRIBUTE_UNUSED,
+		      riscv_subset_t *subset)
+{
+  return (subset->major_version > 0);
+}
+
 /* Record all implicit information for the subsets.  */
 struct riscv_implicit_subset
 {
@@ -1054,8 +1063,8 @@ static struct riscv_implicit_subset riscv_implicit_subsets[] =
   {"h", "zicsr",	check_implicit_always},
   {"q", "d",		check_implicit_always},
   {"v", "d",		check_implicit_always},
-  {"v", "zve64d",	check_implicit_always},
-  {"v", "zvl128b",	check_implicit_always},
+  {"v", "zve64d",	check_implicit_for_v},
+  {"v", "zvl128b",	check_implicit_for_v},
   {"zve64d", "d",	check_implicit_always},
   {"zve64d", "zve64f",	check_implicit_always},
   {"zve64f", "zve32f",	check_implicit_always},
@@ -2369,15 +2378,7 @@ riscv_multi_subset_supports (riscv_parse_subset_t *rps,
 	      || riscv_subset_supports (rps, "zve32x"));
     case INSN_CLASS_V_07:
       return (riscv_subset_supports (rps, "v")
-              && riscv_subset_supports (rps, "zvamo")
-              && riscv_subset_supports (rps, "zvlsseg"));
-    case INSN_CLASS_V_OR_ZVAMO:
-      return (riscv_subset_supports (rps, "a")
-	      && (riscv_subset_supports (rps, "v")
-		  || riscv_subset_supports (rps, "zvamo")));
-    case INSN_CLASS_V_OR_ZVLSSEG:
-      return (riscv_subset_supports (rps, "v")
-	      || riscv_subset_supports (rps, "zvlsseg"));
+	      && !riscv_subset_supports (rps, "zve64d"));
     case INSN_CLASS_ZVEF:
       return (riscv_subset_supports (rps, "v")
 	      || riscv_subset_supports (rps, "zve64d")
