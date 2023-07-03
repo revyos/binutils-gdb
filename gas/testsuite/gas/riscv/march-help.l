@@ -155,6 +155,9 @@ All available -march extensions for RISC-V:
 	xcvmac                                  1.0
 	xcvmem                                  1.0
 	xcvsimd                                 1.0
+	xtheadc                                 1.0
+	xtheade                                 1.0
+	xtheadse                                1.0
 	xtheadba                                1.0
 	xtheadbb                                1.0
 	xtheadbs                                1.0

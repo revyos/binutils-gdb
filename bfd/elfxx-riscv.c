@@ -1296,6 +1296,10 @@ static struct riscv_implicit_subset riscv_implicit_subsets[] =
   {"svade", "+zicsr", check_implicit_always},
   {"svadu", "+zicsr", check_implicit_always},
   {"svbare", "+zicsr", check_implicit_always},
+
+  {"xtheadc", "+xtheadba,+xtheadbb,+xtheadbs,+xtheadcmo,+xtheadcondmov,+xtheadfmemidx,+xtheadint,+xtheadmac,+xtheadmemidx,+xtheadmempair,+xtheadsync", check_implicit_always},
+  {"xtheade", "+xtheadba,+xtheadbb,+xtheadbs,+xtheadcmo,+xtheadcondmov,+xtheadfmemidx,+xtheadint,+xtheadmac,+xtheadmemidx,+xtheadmempair,+xtheadsync", check_implicit_always},
+  {"xtheadse", "+xtheadba,+xtheadbb,+xtheadbs,+xtheadcmo,+xtheadcondmov,+xtheadfmemidx,+xtheadint,+xtheadmac,+xtheadmemidx,+xtheadmempair,+xtheadsync", check_implicit_always},
   {NULL, NULL, NULL}
 };
 
@@ -1571,6 +1575,9 @@ static struct riscv_supported_ext riscv_supported_vendor_x_ext[] =
   {"xcvmac",		ISA_SPEC_CLASS_DRAFT,   1, 0, 0 },
   {"xcvmem",		ISA_SPEC_CLASS_DRAFT,	1, 0, 0 },
   {"xcvsimd",		ISA_SPEC_CLASS_DRAFT,	1, 0, 0 },
+  {"xtheadc",		ISA_SPEC_CLASS_DRAFT,	1, 0, 0 },
+  {"xtheade",		ISA_SPEC_CLASS_DRAFT,	1, 0, 0 },
+  {"xtheadse",		ISA_SPEC_CLASS_DRAFT,	1, 0, 0 },
   {"xtheadba",		ISA_SPEC_CLASS_DRAFT,	1, 0, 0 },
   {"xtheadbb",		ISA_SPEC_CLASS_DRAFT,	1, 0, 0 },
   {"xtheadbs",		ISA_SPEC_CLASS_DRAFT,	1, 0, 0 },
