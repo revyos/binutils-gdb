@@ -777,6 +777,15 @@ add_relaxed_insn (struct riscv_cl_insn *insn, int max_chars, int var,
 	    subtype, symbol, offset, NULL);
 }
 
+/* Create a a new frag and install a raw opcode into buffer.  */
+
+static void
+add_raw_opcode(insn_t opcode, size_t size)
+{
+  char *f = frag_more (size);
+  number_to_chars_littleendian (f, opcode, size);
+}
+
 /* Compute the length of a branch sequence, and adjust the stored length
    accordingly.  If FRAGP is NULL, the worst-case length is returned.  */
 
@@ -1985,6 +1994,55 @@ macro (struct riscv_cl_insn *ip, expressionS *imm_expr,
   int rs1 = (ip->insn_opcode >> OP_SH_RS1) & OP_MASK_RS1;
   int rs2 = (ip->insn_opcode >> OP_SH_RS2) & OP_MASK_RS2;
   int mask = ip->insn_mo->mask;
+  int match = ip->insn_mo->match;
+#ifndef MASK_AQ
+#define MASK_AQ (OP_MASK_AQ << OP_SH_AQ)
+#endif
+#ifndef MASK_RL
+#define MASK_RL (OP_MASK_RL << OP_SH_RL)
+#endif
+
+  switch (match)
+    {
+      case MATCH_LR_W:
+      case (MATCH_LR_W | MASK_AQ):
+      case MATCH_LR_D:
+      case (MATCH_LR_D | MASK_AQ):
+        ip->insn_opcode |= MASK_RL;
+        /* fall through.  */
+
+      case (MATCH_LR_D | MASK_RL):
+      case (MATCH_LR_W | MASK_RL):
+      case (MATCH_LR_W | MASK_RL | MASK_AQ):
+      case (MATCH_LR_D | MASK_RL | MASK_AQ):
+        {
+            static int index = 0;
+            char name[128] = {0};
+            expressionS ep;
+
+            /* Add aqrl for all lr.  */
+            ip->insn_opcode |= MASK_RL | MASK_AQ;
+            snprintf(name, 128, ".Llrsc_%d", index++);
+            ep.X_add_symbol = symbol_find_or_make(name);
+            // ep.X_add_symbol = symbol_find_or_make (name);
+            ep.X_op = O_symbol;
+            ep.X_add_number = 0;
+            add_raw_opcode(0x01a0000b, 4);
+            macro_build (&ep, "j", "j", BFD_RELOC_RISCV_JMP);
+
+            do_align(7, NULL, 0, 0);
+            colon(name);
+            add_raw_opcode ((0x0240000b | (rs1 << 15)), 4);
+            append_insn (ip, imm_expr, *imm_reloc);
+            add_raw_opcode(0x01a0000b, 4);
+            do_align(7, NULL, 0, 0);
+        }
+	return;
+      default:
+	break;
+    }
+#undef MASK_RL
+#undef MASK_AQ
 
   switch (mask)
     {
