@@ -1227,6 +1227,11 @@ static struct riscv_implicit_subset riscv_implicit_subsets[] =
   {"svadu", "zicsr",		check_implicit_always},
   {"smctr", "zicsr",	check_implicit_always},
   {"ssctr", "zicsr",	check_implicit_always},
+  {"b", "zba",		check_implicit_always},
+  {"b", "zbb",		check_implicit_always},
+  {"b", "zbs",		check_implicit_always},
+  {"a", "zaamo",	check_implicit_always},
+  {"a", "zalrsc",	check_implicit_always},
 
   {"xsfvcp", "zve32x",  check_implicit_always},
   {NULL, NULL, NULL}
@@ -1279,6 +1284,7 @@ static struct riscv_supported_ext riscv_supported_std_ext[] =
   {"c",		ISA_SPEC_CLASS_20191213,	2, 0, 0 },
   {"c",		ISA_SPEC_CLASS_20190608,	2, 0, 0 },
   {"c",		ISA_SPEC_CLASS_2P2,		2, 0, 0 },
+  {"b",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"v",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"h",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {NULL, 0, 0, 0, 0}
@@ -1306,7 +1312,9 @@ static struct riscv_supported_ext riscv_supported_std_z_ext[] =
   {"zmmul",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
   {"za64rs",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
   {"za128rs",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
+  {"zaamo",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
   {"zabha",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
+  {"zalrsc",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
   {"zawrs",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
   {"zfbfmin",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
   {"zfa",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
@@ -2491,10 +2499,12 @@ riscv_multi_subset_supports (riscv_parse_subset_t *rps,
       return riscv_subset_supports (rps, "m");
     case INSN_CLASS_ZMMUL:
       return riscv_subset_supports (rps, "zmmul");
-    case INSN_CLASS_A:
-      return riscv_subset_supports (rps, "a");
+    case INSN_CLASS_ZAAMO:
+      return riscv_subset_supports (rps, "zaamo");
     case INSN_CLASS_ZABHA:
       return riscv_subset_supports (rps, "zabha");
+    case INSN_CLASS_ZALRSC:
+      return riscv_subset_supports (rps, "zalrsc");
     case INSN_CLASS_ZAWRS:
       return riscv_subset_supports (rps, "zawrs");
     case INSN_CLASS_F:
@@ -2724,10 +2734,12 @@ riscv_multi_subset_supports_ext (riscv_parse_subset_t *rps,
       return "m";
     case INSN_CLASS_ZMMUL:
       return _ ("m' or `zmmul");
-    case INSN_CLASS_A:
-      return "a";
+    case INSN_CLASS_ZAAMO:
+      return "zaamo";
     case INSN_CLASS_ZABHA:
       return "zabha";
+    case INSN_CLASS_ZALRSC:
+      return "zalrsc";
     case INSN_CLASS_ZAWRS:
       return "zawrs";
     case INSN_CLASS_F:
