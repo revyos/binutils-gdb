@@ -2273,6 +2273,15 @@
 #define MASK_C_NOT 0xfc7f
 #define MATCH_C_MUL 0x9c41
 #define MASK_C_MUL 0xfc63
+/* Zcmp instructions.  */
+#define MATCH_CM_PUSH 0xb802
+#define MASK_CM_PUSH 0xff03
+#define MATCH_CM_POP 0xba02
+#define MASK_CM_POP 0xff03
+#define MATCH_CM_POPRET 0xbe02
+#define MASK_CM_POPRET 0xff03
+#define MATCH_CM_POPRETZ 0xbc02
+#define MASK_CM_POPRETZ 0xff03
 /* Smctr/Ssctr instruction.  */
 #define MATCH_SCTRCLR 0x10400073
 #define MASK_SCTRCLR 0xffffffff
@@ -4177,6 +4186,11 @@ DECLARE_INSN(c_lhu, MATCH_C_LHU, MASK_C_LHU)
 DECLARE_INSN(c_lh, MATCH_C_LH, MASK_C_LH)
 DECLARE_INSN(c_sb, MATCH_C_SB, MASK_C_SB)
 DECLARE_INSN(c_sh, MATCH_C_SH, MASK_C_SH)
+/* Zcmp instructions.  */
+DECLARE_INSN(cm_push, MATCH_CM_PUSH, MASK_CM_PUSH)
+DECLARE_INSN(cm_pop, MATCH_CM_POP, MASK_CM_POP)
+DECLARE_INSN(cm_popret, MATCH_CM_POPRET, MASK_CM_POPRET)
+DECLARE_INSN(cm_popretz, MATCH_CM_POPRETZ, MASK_CM_POPRETZ)
 /* Smctr/Ssctr instruction.  */
 DECLARE_INSN(sctrclr, MATCH_SCTRCLR, MASK_SCTRCLR)
 /* Vendor-specific (T-Head) XTheadBa instructions.  */
