@@ -1255,6 +1255,8 @@ static struct riscv_supported_ext riscv_supported_std_z_ext[] =
   {"zksed",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
   {"zksh",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
   {"zkt",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
+  {"zvamo",             ISA_SPEC_CLASS_DRAFT,           0, 7,  0 },
+  {"zvlsseg",           ISA_SPEC_CLASS_DRAFT,           0, 7,  0 },
   {"zve32x",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
   {"zve32f",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
   {"zve32d",		ISA_SPEC_CLASS_DRAFT,		1, 0,  0 },
