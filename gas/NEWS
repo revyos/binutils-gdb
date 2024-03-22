@@ -1,5 +1,8 @@
 -*- text -*-
 
+* Remove support for RISC-V privileged spec 1.9.1, but linker can still
+  recognize it in case of linking old objects.
+
 Changes in 2.42.1:
 
 * Remove KEYLOCKER and SHA promotions from EVEX MAP4.
