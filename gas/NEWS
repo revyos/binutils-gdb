@@ -1,5 +1,6 @@
 -*- text -*-
 
+* Add support for RISC-V Zimop extension with version 1.0.
 * Remove support for RISC-V privileged spec 1.9.1, but linker can still
   recognize it in case of linking old objects.
 
