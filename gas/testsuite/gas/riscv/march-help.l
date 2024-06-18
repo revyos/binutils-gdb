@@ -96,10 +96,12 @@ All available -march extensions for RISC-V:
 	zcmp                                    1.0
 	smaia                                   1.0
 	smcntrpmf                               1.0
+	smctr                                   1.0
 	smepmp                                  1.0
 	smstateen                               1.0
 	ssaia                                   1.0
 	sscofpmf                                1.0
+	ssctr                                   1.0
 	ssstateen                               1.0
 	sstc                                    1.0
 	svadu                                   1.0

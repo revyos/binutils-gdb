@@ -1221,6 +1221,8 @@ static struct riscv_implicit_subset riscv_implicit_subsets[] =
   {"svade", "zicsr",		check_implicit_always},
   {"svbare", "zicsr",		check_implicit_always},
   {"svadu", "zicsr",		check_implicit_always},
+  {"smctr", "zicsr",	check_implicit_always},
+  {"ssctr", "zicsr",	check_implicit_always},
 
   {"xsfvcp", "zve32x",  check_implicit_always},
   {NULL, NULL, NULL}
@@ -1383,11 +1385,13 @@ static struct riscv_supported_ext riscv_supported_std_s_ext[] =
   {"shvstvecd",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"smaia",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"smcntrpmf",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
+  {"smctr",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"smepmp",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"smstateen",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"ssaia",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"ssccptr",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"sscofpmf",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
+  {"ssctr",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"sscounterenw",	ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"ssstateen",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"sstc",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
@@ -2619,6 +2623,9 @@ riscv_multi_subset_supports (riscv_parse_subset_t *rps,
     case INSN_CLASS_ZCB_AND_ZMMUL:
       return (riscv_subset_supports (rps, "zcb")
 	      && riscv_subset_supports (rps, "zmmul"));
+    case INSN_CLASS_SMCTR_OR_SSCTR:
+      return (riscv_subset_supports (rps, "smctr")
+	      || riscv_subset_supports (rps, "ssctr"));
     case INSN_CLASS_SVINVAL:
       return riscv_subset_supports (rps, "svinval");
     case INSN_CLASS_H:
@@ -2879,6 +2886,8 @@ riscv_multi_subset_supports_ext (riscv_parse_subset_t *rps,
       return _("zcb' and `zbb");
     case INSN_CLASS_ZCB_AND_ZMMUL:
       return _("zcb' and `zmmul', or `zcb' and `m");
+    case INSN_CLASS_SMCTR_OR_SSCTR:
+      return _("smctr' or `ssctr");
     case INSN_CLASS_SVINVAL:
       return "svinval";
     case INSN_CLASS_H:
