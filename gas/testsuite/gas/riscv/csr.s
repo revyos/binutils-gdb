@@ -410,6 +410,9 @@
 	csr vsieh
 	csr vsiph
 
+	# Ssccfg
+	csr scountinhibit
+
 	# Sscsrind
 	csr siselect
 	csr sireg
