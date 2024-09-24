@@ -1393,6 +1393,7 @@ static struct riscv_supported_ext riscv_supported_std_s_ext[] =
   {"smcntrpmf",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"smctr",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"smepmp",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
+  {"smrnmi",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"smstateen",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"ssaia",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
   {"ssccfg",		ISA_SPEC_CLASS_DRAFT,		1, 0, 0 },
