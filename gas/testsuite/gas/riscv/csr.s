@@ -419,6 +419,9 @@
 	# Ssccfg
 	csr scountinhibit
 
+	# Zicfiss
+	csr ssp
+
 	# Sscsrind
 	csr siselect
 	csr sireg

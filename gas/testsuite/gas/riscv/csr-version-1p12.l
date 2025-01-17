@@ -1009,6 +1009,10 @@
 .*Info: macro .*
 .*Warning: invalid CSR `scountinhibit', needs `ssccfg' extension
 .*Info: macro .*
+.*Warning: invalid CSR `ssp', needs `zicfiss' extension
+.*Info: macro .*
+.*Warning: invalid CSR `ssp', needs `zicfiss' extension
+.*Info: macro .*
 .*Warning: invalid CSR `siselect', needs `ssaia or sscsrind' extension
 .*Info: macro .*
 .*Warning: invalid CSR `siselect', needs `ssaia or sscsrind' extension

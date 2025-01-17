@@ -71,6 +71,7 @@ enum riscv_csr_class
   CSR_CLASS_I_32,	/* rv32 only */
   CSR_CLASS_F,		/* f-ext only */
   CSR_CLASS_ZKR,	/* zkr only */
+  CSR_CLASS_ZICFISS,	/* Zicfiss */
   CSR_CLASS_V,		/* rvv only */
   CSR_CLASS_DEBUG,	/* debug CSR */
   CSR_CLASS_H,		/* hypervisor */
@@ -1059,6 +1060,9 @@ riscv_csr_address (const char *csr_name,
       break;
     case CSR_CLASS_ZKR:
       extension = "zkr";
+      break;
+    case CSR_CLASS_ZICFISS:
+      extension = "zicfiss";
       break;
     case CSR_CLASS_V:
       extension = "zve32x";

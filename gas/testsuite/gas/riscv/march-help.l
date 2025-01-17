@@ -21,6 +21,8 @@ All available -march extensions for RISC-V:
 	zihintpause                             2.0
 	zihpm                                   2.0
 	zimop                                   1.0
+	zicfiss                                 1.0
+	zicfilp                                 1.0
 	zmmul                                   1.0
 	zaamo                                   1.0
 	zabha                                   1.0
