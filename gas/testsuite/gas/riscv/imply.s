@@ -48,6 +48,7 @@ imply zcd
 imply zcf
 imply zcmp
 imply zcmop
+imply zcmt
 
 imply zicfilp
 imply zicfiss
