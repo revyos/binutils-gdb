@@ -49,6 +49,9 @@ imply zcf
 imply zcmp
 imply zcmop
 
+imply zicfilp
+imply zicfiss
+
 imply shcounterenw
 imply shgatpa
 imply shtvala
