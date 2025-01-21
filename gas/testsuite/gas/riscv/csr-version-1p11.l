@@ -1733,3 +1733,7 @@
 .*Info: macro .*
 .*Warning: invalid CSR `jvt', needs `zcmt' extension
 .*Info: macro .*
+.*Warning: invalid CSR `srmcfg', needs `ssqosid' extension
+.*Info: macro .*
+.*Warning: invalid CSR `srmcfg', needs `ssqosid' extension
+.*Info: macro .*

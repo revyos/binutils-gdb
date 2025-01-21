@@ -106,6 +106,7 @@ enum riscv_csr_class
   CSR_CLASS_SSTC_32,		/* Sstc RV32 only */
   CSR_CLASS_SSTC_AND_H_32,	/* Sstc RV32 only (with H) */
   CSR_CLASS_SSCTR,		/* Ssctr */
+  CSR_CLASS_SSQOSID,		/* Ssqosid */
   CSR_CLASS_XTHEADVECTOR,	/* xtheadvector only */
 };
 
@@ -1153,6 +1154,9 @@ riscv_csr_address (const char *csr_name,
       break;
     case CSR_CLASS_XTHEADVECTOR:
       extension = "xtheadvector";
+      break;
+    case CSR_CLASS_SSQOSID:
+      extension = "ssqosid";
       break;
     default:
       as_bad (_("internal: bad RISC-V CSR class (0x%x)"), csr_class);
