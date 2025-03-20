@@ -1262,6 +1262,8 @@ static struct riscv_implicit_subset riscv_implicit_subsets[] =
   {"smstateen", "+ssstateen", check_implicit_always},
   {"smepmp", "+zicsr", check_implicit_always},
   {"smdbltrp", "+zicsr", check_implicit_always},
+  {"smnpm", "+zicsr", check_implicit_always},
+  {"smmpm", "+zicsr", check_implicit_always},
 
   {"ssaia", "+zicsr", check_implicit_always},
   {"sscsrind", "+zicsr", check_implicit_always},
@@ -1274,6 +1276,7 @@ static struct riscv_implicit_subset riscv_implicit_subsets[] =
   {"sstvecd", "+zicsr", check_implicit_always},
   {"ssu64xl", "+zicsr", check_implicit_always},
   {"ssdbltrp", "+zicsr", check_implicit_always},
+  {"ssnpm", "+zicsr", check_implicit_always},
 
   {"svade", "+zicsr", check_implicit_always},
   {"svadu", "+zicsr", check_implicit_always},
