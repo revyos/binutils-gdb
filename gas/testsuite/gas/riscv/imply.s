@@ -53,6 +53,8 @@ imply zcmt
 imply zicfilp
 imply zicfiss
 
+imply sha
+
 imply shcounterenw
 imply shgatpa
 imply shtvala
