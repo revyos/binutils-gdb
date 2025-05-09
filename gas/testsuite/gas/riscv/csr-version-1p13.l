@@ -267,11 +267,7 @@
 .*Info: macro .*
 .*Warning: invalid CSR `medelegh', needs rv32i extension
 .*Info: macro .*
-.*Warning: invalid CSR `medelegh' for the privileged spec `1.12'
-.*Info: macro .*
 .*Warning: invalid CSR `medelegh', needs rv32i extension
-.*Info: macro .*
-.*Warning: invalid CSR `medelegh' for the privileged spec `1.12'
 .*Info: macro .*
 .*Warning: invalid CSR `mstatush', needs rv32i extension
 .*Info: macro .*
@@ -1399,45 +1395,45 @@
 .*Info: macro .*
 .*Warning: invalid CSR `mctrctl', needs `smctr' extension
 .*Info: macro .*
-.*Warning: invalid CSR `ustatus' for the privileged spec `1.12'
+.*Warning: invalid CSR `ustatus' for the privileged spec `1.13'
 .*Info: macro .*
-.*Warning: invalid CSR `ustatus' for the privileged spec `1.12'
+.*Warning: invalid CSR `ustatus' for the privileged spec `1.13'
 .*Info: macro .*
-.*Warning: invalid CSR `uie' for the privileged spec `1.12'
+.*Warning: invalid CSR `uie' for the privileged spec `1.13'
 .*Info: macro .*
-.*Warning: invalid CSR `uie' for the privileged spec `1.12'
+.*Warning: invalid CSR `uie' for the privileged spec `1.13'
 .*Info: macro .*
-.*Warning: invalid CSR `utvec' for the privileged spec `1.12'
+.*Warning: invalid CSR `utvec' for the privileged spec `1.13'
 .*Info: macro .*
-.*Warning: invalid CSR `utvec' for the privileged spec `1.12'
+.*Warning: invalid CSR `utvec' for the privileged spec `1.13'
 .*Info: macro .*
-.*Warning: invalid CSR `uscratch' for the privileged spec `1.12'
+.*Warning: invalid CSR `uscratch' for the privileged spec `1.13'
 .*Info: macro .*
-.*Warning: invalid CSR `uscratch' for the privileged spec `1.12'
+.*Warning: invalid CSR `uscratch' for the privileged spec `1.13'
 .*Info: macro .*
-.*Warning: invalid CSR `uepc' for the privileged spec `1.12'
+.*Warning: invalid CSR `uepc' for the privileged spec `1.13'
 .*Info: macro .*
-.*Warning: invalid CSR `uepc' for the privileged spec `1.12'
+.*Warning: invalid CSR `uepc' for the privileged spec `1.13'
 .*Info: macro .*
-.*Warning: invalid CSR `ucause' for the privileged spec `1.12'
+.*Warning: invalid CSR `ucause' for the privileged spec `1.13'
 .*Info: macro .*
-.*Warning: invalid CSR `ucause' for the privileged spec `1.12'
+.*Warning: invalid CSR `ucause' for the privileged spec `1.13'
 .*Info: macro .*
-.*Warning: invalid CSR `utval' for the privileged spec `1.12'
+.*Warning: invalid CSR `utval' for the privileged spec `1.13'
 .*Info: macro .*
-.*Warning: invalid CSR `utval' for the privileged spec `1.12'
+.*Warning: invalid CSR `utval' for the privileged spec `1.13'
 .*Info: macro .*
-.*Warning: invalid CSR `uip' for the privileged spec `1.12'
+.*Warning: invalid CSR `uip' for the privileged spec `1.13'
 .*Info: macro .*
-.*Warning: invalid CSR `uip' for the privileged spec `1.12'
+.*Warning: invalid CSR `uip' for the privileged spec `1.13'
 .*Info: macro .*
-.*Warning: invalid CSR `sedeleg' for the privileged spec `1.12'
+.*Warning: invalid CSR `sedeleg' for the privileged spec `1.13'
 .*Info: macro .*
-.*Warning: invalid CSR `sedeleg' for the privileged spec `1.12'
+.*Warning: invalid CSR `sedeleg' for the privileged spec `1.13'
 .*Info: macro .*
-.*Warning: invalid CSR `sideleg' for the privileged spec `1.12'
+.*Warning: invalid CSR `sideleg' for the privileged spec `1.13'
 .*Info: macro .*
-.*Warning: invalid CSR `sideleg' for the privileged spec `1.12'
+.*Warning: invalid CSR `sideleg' for the privileged spec `1.13'
 .*Info: macro .*
 .*Warning: invalid CSR `fflags', needs `f' extension
 .*Info: macro .*
@@ -1492,4 +1488,8 @@
 .*Warning: invalid CSR `jvt', needs `zcmt' extension
 .*Info: macro .*
 .*Warning: invalid CSR `jvt', needs `zcmt' extension
+.*Info: macro .*
+.*Warning: invalid CSR `srmcfg', needs `ssqosid' extension
+.*Info: macro .*
+.*Warning: invalid CSR `srmcfg', needs `ssqosid' extension
 .*Info: macro .*
