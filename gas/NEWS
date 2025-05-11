@@ -1,8 +1,14 @@
 -*- text -*-
 
-* Add support for RISC-V Zimop extension with version 1.0.
-* Remove support for RISC-V privileged spec 1.9.1, but linker can still
-  recognize it in case of linking old objects.
+* Support for x86 AVX10.2 256 bit rounding has been dropped, as all the
+  hardware would directly support 512 bit vecotr width.
+
+* For RISC-V, stop generating mapping symbols $x and replace with $x<isa>.  The
+  $x was defined to have the same ISA as previous $x<isa>, but now is defined
+  to have the same ISA as elf architecture attribute.  Once used .option arch
+  directives, the file need to be rebuilt since 2.45.
+
+* Add support for RISC-V privileged version 1.13, Profiles.
 
 * Add support for RISC-V Zcmp (cm.mva01s, cm.mvsa01), Smrnmi and CORE-V
   (xcvbitmanip, xcvsimd) extensions with version 1.0.
