@@ -72,4 +72,9 @@
 { "th.vwabdu.vx",    0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,sVm",              MATCH_TH_VWABDU_VX,    MASK_TH_VWABDU_VX,    match_opcode, 0 }, \
 { "th.vfabd.vv",     0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,VsVm",             MATCH_TH_VFABD_VV,     MASK_TH_VFABD_VV,     match_opcode, 0 }, \
 { "th.vfabd.vf",     0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,SVm",              MATCH_TH_VFABD_VF,     MASK_TH_VFABD_VF,     match_opcode, 0 }, \
+/* XuanTie(THead) Vector Crptio Turbo.  */ \
+{ "th.vmacc54l.vv",  0, INSN_CLASS_XTHEADVCRYPTO, "Vd,Vt,VsVm",             MATCH_TH_VMACC54L_VV,  MASK_TH_VMACC54L_VV,  match_opcode, 0 }, \
+{ "th.vmacc54l.vs",  0, INSN_CLASS_XTHEADVCRYPTO, "Vd,Vt,VsVm",             MATCH_TH_VMACC54L_VS,  MASK_TH_VMACC54L_VS,  match_opcode, 0 }, \
+{ "th.vmacc54h.vv",  0, INSN_CLASS_XTHEADVCRYPTO, "Vd,Vt,VsVm",             MATCH_TH_VMACC54H_VV,  MASK_TH_VMACC54H_VV,  match_opcode, 0 }, \
+{ "th.vmacc54h.vs",  0, INSN_CLASS_XTHEADVCRYPTO, "Vd,Vt,VsVm",             MATCH_TH_VMACC54H_VS,  MASK_TH_VMACC54H_VS,  match_opcode, 0 }, \
 
