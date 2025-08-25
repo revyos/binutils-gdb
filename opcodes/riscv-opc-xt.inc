@@ -30,15 +30,17 @@
 {"th.fcpx4",  0, INSN_CLASS_XTHEADCF, "Xtu2@30,D,S,T",           MATCH_TH_FCPX4,  MASK_TH_FCPX4,  match_opcode, 0 }, \
 {"th.fcpx5",  0, INSN_CLASS_XTHEADCF, "Xtu2@30,D,S,T",           MATCH_TH_FCPX5,  MASK_TH_FCPX5,  match_opcode, 0 }, \
 {"th.fcpx6",  0, INSN_CLASS_XTHEADCF, "Xtu2@30,D,T,Xtu5@15",      MATCH_TH_FCPX6,  MASK_TH_FCPX6,  match_opcode, 0 }, \
-/* Xuantie VSFU/VSFA extensions.  */ \
+/* XuanTie VSFU/VSFA extensions.  */ \
 {"th.vfexp2.v", 0, INSN_CLASS_XTHEADVSFA, "Vd,VtVm", MATCH_TH_VFEXP2_V, MASK_TH_VFEXP2_V, match_opcode, 0 }, \
 {"th.vftanh.v", 0, INSN_CLASS_XTHEADVSFA, "Vd,VtVm", MATCH_TH_VFTANH_V, MASK_TH_VFTANH_V, match_opcode, 0 }, \
 {"th.vfsig.v", 0, INSN_CLASS_XTHEADVSFA, "Vd,VtVm", MATCH_TH_VFSIG_V, MASK_TH_VFSIG_V, match_opcode, 0 }, \
 {"th.vfrec.v", 0, INSN_CLASS_XTHEADVSFA, "Vd,VtVm", MATCH_TH_VFREC_V, MASK_TH_VFREC_V, match_opcode, 0 }, \
-/* xtheadvsfb, Vector SFB Extension. */ \
+/* XuanTie xtheadvsfb, Vector SFB Extension. */ \
 {"th.vfsin.v", 0, INSN_CLASS_XTHEADVSFB, "Vd,VtVm", MATCH_TH_VFSIN_V, MASK_TH_VFSIN_V, match_opcode, 0 }, \
 {"th.vfcos.v", 0, INSN_CLASS_XTHEADVSFB, "Vd,VtVm", MATCH_TH_VFCOS_V, MASK_TH_VFCOS_V, match_opcode, 0 }, \
-/* Xuantie AIOE.  */ \
+/* XuanTie AIOE.  */ \
 { "th.senq.64b", 0, INSN_CLASS_XTHEADAIOE,  "d,t,(s)",  MATCH_TH_SENQ_64B,     MASK_TH_SENQ_64B,     match_opcode, 0 }, \
 { "th.uenq.64b", 0, INSN_CLASS_XTHEADAIOE,  "d,t,(s)",  MATCH_TH_UENQ_64B,     MASK_TH_UENQ_64B,     match_opcode, 0 }, \
+/* XuanTie(THead) cbop.  */ \
+{ "th.cbo.cleanp", 0, INSN_CLASS_XTHEADCBOP,  "0(s)",              MATCH_TH_CBO_CLEANP,     MASK_TH_CBO_CLEANP,     match_opcode, 0 }, \
 

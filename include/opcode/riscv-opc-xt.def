@@ -105,6 +105,10 @@
 #define MATCH_TH_UENQ_64B 0x0800602f
 #define MASK_TH_UENQ_64B 0xfe00707f
 
+/* Xuantie CBO extension. xtheadcbop.  */
+#define MATCH_TH_CBO_CLEANP 0x8010200f
+#define MASK_TH_CBO_CLEANP 0xfff07fff
+
 /* Privileged CSRs for Xuantie.  */
 /* T-HEAD M mode CSR.  */
 #define CSR_MXSTATUS 0x7c0
