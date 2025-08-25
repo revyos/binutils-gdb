@@ -255,6 +255,12 @@
 #define MATCH_TH_VFNCVT_F6_F_V 0x7800f00b
 #define MASK_TH_VFNCVT_F6_F_V 0xfc0ff07f
 
+/* XuanTie(THead), CRC32 extensions.  */
+#define MATCH_TH_CRC32C_W 0x0000600b
+#define MASK_TH_CRC32C_W 0xfe00707f
+#define MATCH_TH_CRC32C_D 0x0200600b
+#define MASK_TH_CRC32C_D 0xfe00707f
+
 /* Privileged CSRs for Xuantie.  */
 /* T-HEAD M mode CSR.  */
 #define CSR_MXSTATUS 0x7c0

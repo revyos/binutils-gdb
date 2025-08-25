@@ -116,4 +116,7 @@
 /* XuanTie(THead), xtheadvfofp6min, Xuantie Vector OCP FP6 Convert Extension.  */ \
 {"th.vfwcvt.f.f6.v",   0, INSN_CLASS_XTHEADVFOFP6MIN, "Vd,VtVm",          MATCH_TH_VFWCVT_F_F6_V, MASK_TH_VFWCVT_F_F6_V, match_opcode, 0}, \
 {"th.vfncvt.f6.f.v",   0, INSN_CLASS_XTHEADVFOFP6MIN, "Vd,VtVm",          MATCH_TH_VFNCVT_F6_F_V, MASK_TH_VFNCVT_F6_F_V, match_opcode, 0}, \
+/* XuanTie(THead), CRC32 extensions.  */ \
+{"th.crc32c.w", 0, INSN_CLASS_XTHEADCRC, "d,s,t", MATCH_TH_CRC32C_W, MASK_TH_CRC32C_W, match_opcode, 0}, \
+{"th.crc32c.d", 0, INSN_CLASS_XTHEADCRC, "d,s,t", MATCH_TH_CRC32C_D, MASK_TH_CRC32C_D, match_opcode, 0}, \
 
