@@ -83,6 +83,16 @@
 #define MATCH_TH_CPX10 0xa00105b
 #define MASK_TH_CPX10 0x3e00707f
 
+/* T-Head VSFU extensions.  */
+#define MATCH_TH_VFEXP2_V 0xc000600b
+#define MASK_TH_VFEXP2_V 0xfc0ff07f
+#define MATCH_TH_VFTANH_V 0xc000e00b
+#define MASK_TH_VFTANH_V 0xfc0ff07f
+#define MATCH_TH_VFSIG_V 0xc001600b
+#define MASK_TH_VFSIG_V 0xfc0ff07f
+#define MATCH_TH_VFREC_V 0xc001e00b
+#define MASK_TH_VFREC_V 0xfc0ff07f
+
 /* Privileged CSRs for Xuantie.  */
 /* T-HEAD M mode CSR.  */
 #define CSR_MXSTATUS 0x7c0
