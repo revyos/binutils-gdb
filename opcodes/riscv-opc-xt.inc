@@ -38,4 +38,7 @@
 /* xtheadvsfb, Vector SFB Extension. */ \
 {"th.vfsin.v", 0, INSN_CLASS_XTHEADVSFB, "Vd,VtVm", MATCH_TH_VFSIN_V, MASK_TH_VFSIN_V, match_opcode, 0 }, \
 {"th.vfcos.v", 0, INSN_CLASS_XTHEADVSFB, "Vd,VtVm", MATCH_TH_VFCOS_V, MASK_TH_VFCOS_V, match_opcode, 0 }, \
+/* Xuantie AIOE.  */ \
+{ "th.senq.64b", 0, INSN_CLASS_XTHEADAIOE,  "d,t,(s)",  MATCH_TH_SENQ_64B,     MASK_TH_SENQ_64B,     match_opcode, 0 }, \
+{ "th.uenq.64b", 0, INSN_CLASS_XTHEADAIOE,  "d,t,(s)",  MATCH_TH_UENQ_64B,     MASK_TH_UENQ_64B,     match_opcode, 0 }, \
 

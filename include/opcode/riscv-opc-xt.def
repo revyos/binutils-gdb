@@ -99,6 +99,12 @@
 #define MATCH_TH_VFCOS_V 0xc002e00b
 #define MASK_TH_VFCOS_V 0xfc0ff07f
 
+/* XuanTie AIOE. */
+#define MATCH_TH_SENQ_64B 0x0000602f
+#define MASK_TH_SENQ_64B 0xfe00707f
+#define MATCH_TH_UENQ_64B 0x0800602f
+#define MASK_TH_UENQ_64B 0xfe00707f
+
 /* Privileged CSRs for Xuantie.  */
 /* T-HEAD M mode CSR.  */
 #define CSR_MXSTATUS 0x7c0
