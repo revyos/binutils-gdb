@@ -45,7 +45,8 @@ bool riscv_xuantie_multi_subset_supports (riscv_parse_subset_t *rps,
   M ("xtheadvarith", INSN_CLASS_XTHEADVARITH, 1, 0, 0)                        \
   M ("xtheadvcoder", INSN_CLASS_XTHEADVCODER, 1, 0, 0)                        \
   M ("xtheadvcrypto", INSN_CLASS_XTHEADVCRYPTO, 1, 0, 0)		      \
-  M ("xtheadvdot", INSN_CLASS_XTHEADVDOT, 1, 0, 0)
+  M ("xtheadvdot", INSN_CLASS_XTHEADVDOT, 1, 0, 0)			      \
+  M ("xtheadvfofp8min", INSN_CLASS_XTHEADVFOFP8MIN, 1, 0, 0)
 
 #define XUANTIE_M_riscv_supported_vendor_x_ext(xstring, class, r, p, s)       \
   { xstring, ISA_SPEC_CLASS_DRAFT, r, p, s },

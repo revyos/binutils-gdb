@@ -100,4 +100,10 @@
 { "th.vpwaddu.vv",  0, INSN_CLASS_XTHEADVDOT, "Vd,Vt,VsVm", MATCH_TH_VPWADDU_VV,  MASK_TH_VPWADDU_VV,  match_opcode, 0}, \
 { "th.vpwadd.vx",   0, INSN_CLASS_XTHEADVDOT, "Vd,Vt,sVm",  MATCH_TH_VPWADD_VX,   MASK_TH_VPWADD_VX,   match_opcode, 0}, \
 { "th.vpwaddu.vx",  0, INSN_CLASS_XTHEADVDOT, "Vd,Vt,sVm",  MATCH_TH_VPWADDU_VX,  MASK_TH_VPWADDU_VX,  match_opcode, 0}, \
+/* XuanTie(THead), Xuantie Vector OCP FP8 Convert.  */ \
+{ "th.vfwcvtbf16.f.f.v",     0, INSN_CLASS_XTHEADVFOFP8MIN, "Vd,VtVm",     MATCH_TH_VFWCVTBF16_F_F_V,  MASK_TH_VFWCVTBF16_F_F_V,  match_opcode, 0 }, \
+{ "th.vfncvtbf16.f.f.w",     0, INSN_CLASS_XTHEADVFOFP8MIN, "Vd,VtVm",     MATCH_TH_VFNCVTBF16_F_F_W,  MASK_TH_VFNCVTBF16_F_F_W,  match_opcode, 0 }, \
+{ "th.vfncvtbf16.sat.f.f.w", 0, INSN_CLASS_XTHEADVFOFP8MIN, "Vd,VtVm",     MATCH_TH_VFNCVTBF16_SAT_F_F_W,  MASK_TH_VFNCVTBF16_SAT_F_F_W,  match_opcode, 0 }, \
+{ "th.vfncvt.f.f.q",         0, INSN_CLASS_XTHEADVFOFP8MIN, "Vd,VtVm",     MATCH_TH_VFNCVT_F_F_Q,  MASK_TH_VFNCVT_F_F_Q,  match_opcode, 0 }, \
+{ "th.vfncvt.sat.f.f.q",     0, INSN_CLASS_XTHEADVFOFP8MIN, "Vd,VtVm",     MATCH_TH_VFNCVT_SAT_F_F_Q,  MASK_TH_VFNCVT_SAT_F_F_Q,  match_opcode, 0 }, \
 
