@@ -223,7 +223,6 @@
 #define MATCH_TH_VPWADDU_VX 0xbc00700b
 #define MASK_TH_VPWADDU_VX 0xfc00707f
 
-
 /* XuanTie(THead), Xuantie Vector OCP FP8 Convert.  */
 #define MATCH_TH_VFWCVTBF16_F_F_V 0x7806f00b
 #define MASK_TH_VFWCVTBF16_F_F_V 0xfc0ff07f
@@ -235,6 +234,14 @@
 #define MASK_TH_VFNCVT_F_F_Q 0xfc0ff07f
 #define MATCH_TH_VFNCVT_SAT_F_F_Q 0x780cf00b
 #define MASK_TH_VFNCVT_SAT_F_F_Q 0xfc0ff07f
+
+/* XuanTie(THead), Xuantie Vector OCP E8M0 Convert Extension */
+#define MATCH_TH_VFWCVT_F_E8M0_V 0x7804f00b
+#define MASK_TH_VFWCVT_F_E8M0_V 0xfc0ff07f
+#define MATCH_TH_VFNCVT_E8M0_F_W 0x7808f00b
+#define MASK_TH_VFNCVT_E8M0_F_W 0xfc0ff07f
+#define MATCH_TH_VFNCVT_E8M0_F_Q 0x780d700b
+#define MASK_TH_VFNCVT_E8M0_F_Q 0xfc0ff07f
 
 /* Privileged CSRs for Xuantie.  */
 /* T-HEAD M mode CSR.  */
