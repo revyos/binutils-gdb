@@ -72,9 +72,32 @@
 { "th.vwabdu.vx",    0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,sVm",              MATCH_TH_VWABDU_VX,    MASK_TH_VWABDU_VX,    match_opcode, 0 }, \
 { "th.vfabd.vv",     0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,VsVm",             MATCH_TH_VFABD_VV,     MASK_TH_VFABD_VV,     match_opcode, 0 }, \
 { "th.vfabd.vf",     0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,SVm",              MATCH_TH_VFABD_VF,     MASK_TH_VFABD_VF,     match_opcode, 0 }, \
-/* XuanTie(THead) Vector Crptio Turbo.  */ \
+/* XuanTie(THead) Vector Crypto Turbo.  */ \
 { "th.vmacc54l.vv",  0, INSN_CLASS_XTHEADVCRYPTO, "Vd,Vt,VsVm",             MATCH_TH_VMACC54L_VV,  MASK_TH_VMACC54L_VV,  match_opcode, 0 }, \
 { "th.vmacc54l.vs",  0, INSN_CLASS_XTHEADVCRYPTO, "Vd,Vt,VsVm",             MATCH_TH_VMACC54L_VS,  MASK_TH_VMACC54L_VS,  match_opcode, 0 }, \
 { "th.vmacc54h.vv",  0, INSN_CLASS_XTHEADVCRYPTO, "Vd,Vt,VsVm",             MATCH_TH_VMACC54H_VV,  MASK_TH_VMACC54H_VV,  match_opcode, 0 }, \
 { "th.vmacc54h.vs",  0, INSN_CLASS_XTHEADVCRYPTO, "Vd,Vt,VsVm",             MATCH_TH_VMACC54H_VS,  MASK_TH_VMACC54H_VS,  match_opcode, 0 }, \
+/* XuanTie(THead) Vector DOT Turbo.  */ \
+{ "th.vmaqa.vv",    0, INSN_CLASS_XTHEADVDOT, "Vd,Vs,VtVm", MATCH_TH_VMAQA_VV,    MASK_TH_VMAQA_VV,    match_opcode, 0}, \
+{ "th.vmaqau.vv",   0, INSN_CLASS_XTHEADVDOT, "Vd,Vs,VtVm", MATCH_TH_VMAQAU_VV,   MASK_TH_VMAQAU_VV,   match_opcode, 0}, \
+{ "th.vmaqasu.vv",  0, INSN_CLASS_XTHEADVDOT, "Vd,Vs,VtVm", MATCH_TH_VMAQASU_VV,  MASK_TH_VMAQASU_VV,  match_opcode, 0}, \
+{ "th.vmaqa.vx",    0, INSN_CLASS_XTHEADVDOT, "Vd,s,VtVm",  MATCH_TH_VMAQA_VX,    MASK_TH_VMAQA_VX,    match_opcode, 0}, \
+{ "th.vmaqau.vx",   0, INSN_CLASS_XTHEADVDOT, "Vd,s,VtVm",  MATCH_TH_VMAQAU_VX,   MASK_TH_VMAQAU_VX,   match_opcode, 0}, \
+{ "th.vmaqasu.vx",  0, INSN_CLASS_XTHEADVDOT, "Vd,s,VtVm",  MATCH_TH_VMAQASU_VX,  MASK_TH_VMAQASU_VX,  match_opcode, 0}, \
+{ "th.vmaqaus.vx",  0, INSN_CLASS_XTHEADVDOT, "Vd,s,VtVm",  MATCH_TH_VMAQAUS_VX,  MASK_TH_VMAQAUS_VX,  match_opcode, 0}, \
+{ "th.vpmaqa.vv",   0, INSN_CLASS_XTHEADVDOT, "Vd,Vs,VtVm", MATCH_TH_VPMAQA_VV,   MASK_TH_VPMAQA_VV,   match_opcode, 0}, \
+{ "th.vpmaqau.vv",  0, INSN_CLASS_XTHEADVDOT, "Vd,Vs,VtVm", MATCH_TH_VPMAQAU_VV,  MASK_TH_VPMAQAU_VV,  match_opcode, 0}, \
+{ "th.vpmaqasu.vv", 0, INSN_CLASS_XTHEADVDOT, "Vd,Vs,VtVm", MATCH_TH_VPMAQASU_VV, MASK_TH_VPMAQASU_VV, match_opcode, 0}, \
+{ "th.vpmaqa.vx",   0, INSN_CLASS_XTHEADVDOT, "Vd,s,VtVm",  MATCH_TH_VPMAQA_VX,   MASK_TH_VPMAQA_VX,   match_opcode, 0}, \
+{ "th.vpmaqau.vx",  0, INSN_CLASS_XTHEADVDOT, "Vd,s,VtVm",  MATCH_TH_VPMAQAU_VX,  MASK_TH_VPMAQAU_VX,  match_opcode, 0}, \
+{ "th.vpmaqasu.vx", 0, INSN_CLASS_XTHEADVDOT, "Vd,s,VtVm",  MATCH_TH_VPMAQASU_VX, MASK_TH_VPMAQASU_VX, match_opcode, 0}, \
+{ "th.vpmaqaus.vx", 0, INSN_CLASS_XTHEADVDOT, "Vd,s,VtVm",  MATCH_TH_VPMAQAUS_VX, MASK_TH_VPMAQAUS_VX, match_opcode, 0}, \
+{ "th.vpnclip.wv",  0, INSN_CLASS_XTHEADVDOT, "Vd,Vt,VsVm", MATCH_TH_VPNCLIP_WV,  MASK_TH_VPNCLIP_WV,  match_opcode, 0}, \
+{ "th.vpnclipu.wv", 0, INSN_CLASS_XTHEADVDOT, "Vd,Vt,VsVm", MATCH_TH_VPNCLIPU_WV, MASK_TH_VPNCLIPU_WV, match_opcode, 0}, \
+{ "th.vpnclip.wx",  0, INSN_CLASS_XTHEADVDOT, "Vd,Vt,sVm",  MATCH_TH_VPNCLIP_WX,  MASK_TH_VPNCLIP_WX,  match_opcode, 0}, \
+{ "th.vpnclipu.wx", 0, INSN_CLASS_XTHEADVDOT, "Vd,Vt,sVm",  MATCH_TH_VPNCLIPU_WX, MASK_TH_VPNCLIPU_WX, match_opcode, 0}, \
+{ "th.vpwadd.vv",   0, INSN_CLASS_XTHEADVDOT, "Vd,Vt,VsVm", MATCH_TH_VPWADD_VV,   MASK_TH_VPWADD_VV,   match_opcode, 0}, \
+{ "th.vpwaddu.vv",  0, INSN_CLASS_XTHEADVDOT, "Vd,Vt,VsVm", MATCH_TH_VPWADDU_VV,  MASK_TH_VPWADDU_VV,  match_opcode, 0}, \
+{ "th.vpwadd.vx",   0, INSN_CLASS_XTHEADVDOT, "Vd,Vt,sVm",  MATCH_TH_VPWADD_VX,   MASK_TH_VPWADD_VX,   match_opcode, 0}, \
+{ "th.vpwaddu.vx",  0, INSN_CLASS_XTHEADVDOT, "Vd,Vt,sVm",  MATCH_TH_VPWADDU_VX,  MASK_TH_VPWADDU_VX,  match_opcode, 0}, \
 
