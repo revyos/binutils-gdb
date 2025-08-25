@@ -49,6 +49,7 @@ bool riscv_xuantie_multi_subset_supports (riscv_parse_subset_t *rps,
   M ("xtheadvfofp8min", INSN_CLASS_XTHEADVFOFP8MIN, 1, 0, 0)		      \
   M ("xtheadvfoe8m0min", INSN_CLASS_XTHEADVFOE8M0MIN, 1, 0, 0)		      \
   M ("xtheadvfofp4min", INSN_CLASS_XTHEADVFOFP4MIN, 1, 0, 0)		      \
+  M ("xtheadvfofp6min", INSN_CLASS_XTHEADVFOFP6MIN, 1, 0, 0)		      \
 
 #define XUANTIE_M_riscv_supported_vendor_x_ext(xstring, class, r, p, s)       \
   { xstring, ISA_SPEC_CLASS_DRAFT, r, p, s },

@@ -249,6 +249,12 @@
  #define MATCH_TH_VFWCVT_F_F_V_VF2 0x7805700b
  #define MASK_TH_VFWCVT_F_F_V_VF2 0xfc0ff07f
 
+ /* XuanTie(THead), xtheadvfofp6min, Xuantie Vector OCP FP6 Convert Extension.  */
+#define MATCH_TH_VFWCVT_F_F6_V 0x7800700b
+#define MASK_TH_VFWCVT_F_F6_V 0xfc0ff07f
+#define MATCH_TH_VFNCVT_F6_F_V 0x7800f00b
+#define MASK_TH_VFNCVT_F6_F_V 0xfc0ff07f
+
 /* Privileged CSRs for Xuantie.  */
 /* T-HEAD M mode CSR.  */
 #define CSR_MXSTATUS 0x7c0

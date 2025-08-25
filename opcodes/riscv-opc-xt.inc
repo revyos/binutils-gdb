@@ -113,4 +113,7 @@
 /* XuanTie(THead), xtheadvfofp4min, Xuantie Vector OCP FP4 Convert Extension.  */ \
 {"th.vfncvt.f.f.w.vf2", 0, INSN_CLASS_XTHEADVFOFP4MIN, "Vd,VtVm",          MATCH_TH_VFNCVT_F_F_W_VF2, MASK_TH_VFNCVT_F_F_W_VF2, match_opcode, 0}, \
 {"th.vfwcvt.f.f.v.vf2", 0, INSN_CLASS_XTHEADVFOFP4MIN, "Vd,VtVm",          MATCH_TH_VFWCVT_F_F_V_VF2, MASK_TH_VFWCVT_F_F_V_VF2, match_opcode, 0}, \
+/* XuanTie(THead), xtheadvfofp6min, Xuantie Vector OCP FP6 Convert Extension.  */ \
+{"th.vfwcvt.f.f6.v",   0, INSN_CLASS_XTHEADVFOFP6MIN, "Vd,VtVm",          MATCH_TH_VFWCVT_F_F6_V, MASK_TH_VFWCVT_F_F6_V, match_opcode, 0}, \
+{"th.vfncvt.f6.f.v",   0, INSN_CLASS_XTHEADVFOFP6MIN, "Vd,VtVm",          MATCH_TH_VFNCVT_F6_F_V, MASK_TH_VFNCVT_F6_F_V, match_opcode, 0}, \
 
