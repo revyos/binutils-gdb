@@ -43,4 +43,10 @@
 { "th.uenq.64b", 0, INSN_CLASS_XTHEADAIOE,  "d,t,(s)",  MATCH_TH_UENQ_64B,     MASK_TH_UENQ_64B,     match_opcode, 0 }, \
 /* XuanTie(THead) cbop.  */ \
 { "th.cbo.cleanp", 0, INSN_CLASS_XTHEADCBOP,  "0(s)",              MATCH_TH_CBO_CLEANP,     MASK_TH_CBO_CLEANP,     match_opcode, 0 }, \
+/* Vector Arith Turbo.  */ \
+{ "th.vile.vv",      0, INSN_CLASS_XTHEADVARITH,  "Vd,Vt,Vs",               MATCH_TH_VILE_VV,      MASK_TH_VILE_VV,      match_opcode, 0 }, \
+{ "th.vilo.vv",      0, INSN_CLASS_XTHEADVARITH,  "Vd,Vt,Vs",               MATCH_TH_VILO_VV,      MASK_TH_VILO_VV,      match_opcode, 0 }, \
+{ "th.vcrcfoldr.vv", 0, INSN_CLASS_XTHEADVARITH,  "Vd,Vt,Vs",               MATCH_TH_VCRCFOLDR_VV, MASK_TH_VCRCFOLDR_VV, match_opcode, 0 }, \
+{ "th.vcrcfoldn.vv", 0, INSN_CLASS_XTHEADVARITH,  "Vd,Vt,Vs",               MATCH_TH_VCRCFOLDN_VV, MASK_TH_VCRCFOLDN_VV, match_opcode, 0 }, \
+{ "th.vgmulxor.vv",  0, INSN_CLASS_XTHEADVARITH,  "Vd,Vt,Vs",                MATCH_TH_VGMULXOR_VV, MASK_TH_VGMULXOR_VV, match_opcode, 0 }, \
 
