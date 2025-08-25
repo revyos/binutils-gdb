@@ -215,6 +215,8 @@ maybe_print_address (struct riscv_private_data *pd, int base_reg, int offset,
     pd->print_addr = (bfd_vma)(uint32_t)pd->print_addr;
 }
 
+#include "riscv-dis-xt.inc"
+
 /* Print insn arguments for 32/64-bit code.  */
 
 static void
@@ -577,6 +579,8 @@ print_insn_args (const char *oparg, insn_t l, bfd_vma pc, disassemble_info *info
 		      || csr == CSR_VLENB))
 		print (info->stream, dis_style_register, "%s",
 		       concat ("th.", riscv_csr_hash[csr], NULL));
+	      else if (riscv_xuantie_print_csr (csr, info))
+		break;
 	      else
 		print (info->stream, dis_style_register, "%s",
 		       riscv_csr_hash[csr]);
@@ -705,6 +709,8 @@ print_insn_args (const char *oparg, insn_t l, bfd_vma pc, disassemble_info *info
 			     (signed long)EXTRACT_S_IMM (n, s, l));
 		    break;
 		  default:
+		    if (riscv_xuan_print_args (&oparg, l, info))
+		      break;
 		    goto undefined_modifier;
 		  }
 	      }

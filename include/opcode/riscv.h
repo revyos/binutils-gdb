@@ -25,6 +25,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+#include "riscv-xt.h"
+
 typedef uint64_t insn_t;
 
 static inline unsigned int riscv_insn_length (insn_t insn)
@@ -499,6 +501,7 @@ enum riscv_insn_class
   INSN_CLASS_XTHEADZVAMO,
   INSN_CLASS_XVENTANACONDOPS,
   INSN_CLASS_XSFVCP,
+  INSN_CLASS_XUANTIE_LIST
 };
 
 /* This structure holds information for a particular instruction.  */

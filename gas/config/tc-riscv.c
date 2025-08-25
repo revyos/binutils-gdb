@@ -68,44 +68,45 @@ enum riscv_csr_class
   CSR_CLASS_NONE,
 
   CSR_CLASS_I,
-  CSR_CLASS_I_32,	/* rv32 only */
-  CSR_CLASS_F,		/* f-ext only */
-  CSR_CLASS_ZKR,	/* zkr only */
-  CSR_CLASS_ZICFISS,	/* Zicfiss */
-  CSR_CLASS_V,		/* rvv only */
-  CSR_CLASS_DEBUG,	/* debug CSR */
-  CSR_CLASS_H,		/* hypervisor */
-  CSR_CLASS_H_32,	/* hypervisor, rv32 only */
-  CSR_CLASS_SMAIA,		/* Smaia */
-  CSR_CLASS_SMAIA_32,		/* Smaia, rv32 only */
-  CSR_CLASS_SMAIA_OR_SMCSRIND,		/* Smaia/Smcsrind */
-  CSR_CLASS_SMCSRIND,		/* Smcsrind */
-  CSR_CLASS_SMCNTRPMF,		/* Smcntrpmf */
-  CSR_CLASS_SMCNTRPMF_32,	/* Smcntrpmf, rv32 only */
-  CSR_CLASS_SMRNMI,		/* Smrnmi */
-  CSR_CLASS_SMSTATEEN,		/* Smstateen only */
-  CSR_CLASS_SMSTATEEN_32,	/* Smstateen RV32 only */
-  CSR_CLASS_SMCTR,		/* Smctr */
-  CSR_CLASS_SSAIA,		/* Ssaia */
-  CSR_CLASS_SSAIA_AND_H,	/* Ssaia with H */
-  CSR_CLASS_SSAIA_32,		/* Ssaia, rv32 only */
-  CSR_CLASS_SSAIA_AND_H_32,	/* Ssaia with H, rv32 only */
-  CSR_CLASS_SSAIA_OR_SSCSRIND,		/* Ssaia/Smcsrind */
-  CSR_CLASS_SSAIA_OR_SSCSRIND_AND_H,	/* Ssaia/Smcsrind with H */
-  CSR_CLASS_SSCCFG,		/* Ssccfg */
-  CSR_CLASS_SSCSRIND,		/* Sscsrind */
-  CSR_CLASS_SSCSRIND_AND_H,	/* Sscsrind with H */
-  CSR_CLASS_SSSTATEEN,		/* S[ms]stateen only */
-  CSR_CLASS_SSSTATEEN_AND_H,	/* S[ms]stateen only (with H) */
-  CSR_CLASS_SSSTATEEN_AND_H_32,	/* S[ms]stateen RV32 only (with H) */
-  CSR_CLASS_SSCOFPMF,		/* Sscofpmf only */
-  CSR_CLASS_SSCOFPMF_32,	/* Sscofpmf RV32 only */
-  CSR_CLASS_SSTC,		/* Sstc only */
-  CSR_CLASS_SSTC_AND_H,		/* Sstc only (with H) */
-  CSR_CLASS_SSTC_32,		/* Sstc RV32 only */
-  CSR_CLASS_SSTC_AND_H_32,	/* Sstc RV32 only (with H) */
-  CSR_CLASS_SSCTR,		/* Ssctr */
-  CSR_CLASS_XTHEADVECTOR,	/* xtheadvector only */
+  CSR_CLASS_I_32,                    /* rv32 only */
+  CSR_CLASS_F,                       /* f-ext only */
+  CSR_CLASS_ZKR,                     /* zkr only */
+  CSR_CLASS_ZICFISS,                 /* Zicfiss */
+  CSR_CLASS_V,                       /* rvv only */
+  CSR_CLASS_DEBUG,                   /* debug CSR */
+  CSR_CLASS_H,                       /* hypervisor */
+  CSR_CLASS_H_32,                    /* hypervisor, rv32 only */
+  CSR_CLASS_SMAIA,                   /* Smaia */
+  CSR_CLASS_SMAIA_32,                /* Smaia, rv32 only */
+  CSR_CLASS_SMAIA_OR_SMCSRIND,       /* Smaia/Smcsrind */
+  CSR_CLASS_SMCSRIND,                /* Smcsrind */
+  CSR_CLASS_SMCNTRPMF,               /* Smcntrpmf */
+  CSR_CLASS_SMCNTRPMF_32,            /* Smcntrpmf, rv32 only */
+  CSR_CLASS_SMRNMI,                  /* Smrnmi */
+  CSR_CLASS_SMSTATEEN,               /* Smstateen only */
+  CSR_CLASS_SMSTATEEN_32,            /* Smstateen RV32 only */
+  CSR_CLASS_SMCTR,                   /* Smctr */
+  CSR_CLASS_SSAIA,                   /* Ssaia */
+  CSR_CLASS_SSAIA_AND_H,             /* Ssaia with H */
+  CSR_CLASS_SSAIA_32,                /* Ssaia, rv32 only */
+  CSR_CLASS_SSAIA_AND_H_32,          /* Ssaia with H, rv32 only */
+  CSR_CLASS_SSAIA_OR_SSCSRIND,       /* Ssaia/Smcsrind */
+  CSR_CLASS_SSAIA_OR_SSCSRIND_AND_H, /* Ssaia/Smcsrind with H */
+  CSR_CLASS_SSCCFG,                  /* Ssccfg */
+  CSR_CLASS_SSCSRIND,                /* Sscsrind */
+  CSR_CLASS_SSCSRIND_AND_H,          /* Sscsrind with H */
+  CSR_CLASS_SSSTATEEN,               /* S[ms]stateen only */
+  CSR_CLASS_SSSTATEEN_AND_H,         /* S[ms]stateen only (with H) */
+  CSR_CLASS_SSSTATEEN_AND_H_32,      /* S[ms]stateen RV32 only (with H) */
+  CSR_CLASS_SSCOFPMF,                /* Sscofpmf only */
+  CSR_CLASS_SSCOFPMF_32,             /* Sscofpmf RV32 only */
+  CSR_CLASS_SSTC,                    /* Sstc only */
+  CSR_CLASS_SSTC_AND_H,              /* Sstc only (with H) */
+  CSR_CLASS_SSTC_32,                 /* Sstc RV32 only */
+  CSR_CLASS_SSTC_AND_H_32,           /* Sstc RV32 only (with H) */
+  CSR_CLASS_SSCTR,                   /* Ssctr */
+  CSR_CLASS_XTHEADVECTOR,            /* xtheadvector only */
+  CSR_CLASS_XTHEAD,
 };
 
 /* This structure holds all restricted conditions for a CSR.  */
@@ -952,6 +953,8 @@ enum reg_class
   RCLASS_CSR
 };
 
+#include "tc-riscv-xt.inc"
+
 static htab_t reg_names_hash = NULL;
 static htab_t csr_extra_hash = NULL;
 
@@ -1532,6 +1535,8 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
 		    USE_IMM (n, s);
 		    break;
 		  default:
+		    if (riscv_xuantie_use_bits (&oparg, &used_bits))
+		      break;
 		    goto unknown_validate_operand;
 		  }
 	      }
@@ -3778,6 +3783,9 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 			asarg = expr_parse_end;
 			continue;
 		      default:
+			if (riscv_xuantie_parsing_args (&oparg, &asarg, ip,
+							imm_expr, imm_reloc))
+			  continue;
 			goto unknown_riscv_ip_operand;
 		      }
 		  }

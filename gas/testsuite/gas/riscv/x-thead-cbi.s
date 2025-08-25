@@ -1,0 +1,9 @@
+th.cpx0	1,a1,256
+th.cpx1	1,a1
+th.cpx2	1,a0,a1,8
+th.cpx3	1,a0,a1
+th.cpx4	1,a1,a2,8
+th.cpx5	1,a1,a2
+th.cpx6	1,a0,a1,a2
+th.cpx9	1,a0,a1,32
+th.cpx10	1,a0,32

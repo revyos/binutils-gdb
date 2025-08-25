@@ -24,6 +24,8 @@
 #include "opcode/riscv.h"
 #include <stdio.h>
 
+#include "riscv-opc-xt.inc"
+
 /* Register names used by gas and objdump.  */
 
 const char riscv_gpr_names_numeric[NGPR][NRC] =
@@ -3154,6 +3156,8 @@ const struct riscv_opcode riscv_opcodes[] =
 {"sf.vc.v.ivw", 0, INSN_CLASS_XSFVCP, "XsO2,Vd,Vt,Vi", MATCH_SF_VC_V_IVW, MASK_SF_VC_V_IVW, match_opcode, 0 },
 {"sf.vc.fvw",   0, INSN_CLASS_XSFVCP, "XsO1,Vd,Vt,S",  MATCH_SF_VC_FVW, MASK_SF_VC_FVW, match_opcode, 0 },
 {"sf.vc.v.fvw", 0, INSN_CLASS_XSFVCP, "XsO1,Vd,Vt,S",  MATCH_SF_VC_V_FVW, MASK_SF_VC_V_FVW, match_opcode, 0 },
+
+XUANTIE_DEFINE_riscv_opcodes
 
 /* Terminate the list.  */
 {0, 0, INSN_CLASS_NONE, 0, 0, 0, 0, 0}

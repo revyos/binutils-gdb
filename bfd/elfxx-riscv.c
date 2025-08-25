@@ -1457,8 +1457,9 @@ static struct riscv_supported_ext riscv_supported_vendor_x_ext[] =
   {"xtheadvector",	ISA_SPEC_CLASS_DRAFT,	1, 0, 0 },
   {"xtheadzvamo",	ISA_SPEC_CLASS_DRAFT,	1, 0, 0 },
   {"xventanacondops",	ISA_SPEC_CLASS_DRAFT,	1, 0, 0 },
-  {"xsfvcp",		ISA_SPEC_CLASS_DRAFT,	1, 0, 0},
-  {NULL, 0, 0, 0, 0}
+  {"xsfvcp",		ISA_SPEC_CLASS_DRAFT,	1, 0, 0 },
+  XUANTIE_DEFINE_ALL_riscv_supported_vendor_x_ext
+  { NULL, 0, 0, 0, 0 }
 };
 
 const struct riscv_supported_ext *riscv_all_supported_ext[] =
@@ -2708,9 +2709,11 @@ riscv_multi_subset_supports (riscv_parse_subset_t *rps,
       return riscv_subset_supports (rps, "xventanacondops");
     case INSN_CLASS_XSFVCP:
       return riscv_subset_supports (rps, "xsfvcp");
-    default:
-      rps->error_handler
-        (_("internal: unreachable INSN_CLASS_*"));
+
+    XUANTIE_DEFINE_ALL_riscv_multi_subset_supports
+
+    default :
+      rps->error_handler (_ ("internal: unreachable INSN_CLASS_*"));
       return false;
     }
 }
@@ -2985,9 +2988,13 @@ riscv_multi_subset_supports_ext (riscv_parse_subset_t *rps,
       return "xtheadvector";
     case INSN_CLASS_XTHEADZVAMO:
       return "xtheadzvamo";
+
+    XUANTIE_DEFINE_ALL_riscv_multi_subset_supports_ext
+
     default:
-      rps->error_handler
-        (_("internal: unreachable INSN_CLASS_*"));
+      rps->error_handler (_ ("internal: unreachable INSN_CLASS_*"));
       return NULL;
     }
 }
+
+#include "elfxx-riscv-xt.inc"
