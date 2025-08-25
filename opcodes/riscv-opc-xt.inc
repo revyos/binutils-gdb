@@ -43,10 +43,33 @@
 { "th.uenq.64b", 0, INSN_CLASS_XTHEADAIOE,  "d,t,(s)",  MATCH_TH_UENQ_64B,     MASK_TH_UENQ_64B,     match_opcode, 0 }, \
 /* XuanTie(THead) cbop.  */ \
 { "th.cbo.cleanp", 0, INSN_CLASS_XTHEADCBOP,  "0(s)",              MATCH_TH_CBO_CLEANP,     MASK_TH_CBO_CLEANP,     match_opcode, 0 }, \
-/* Vector Arith Turbo.  */ \
+/* XuanTie(THead) Vector Arith Turbo.  */ \
 { "th.vile.vv",      0, INSN_CLASS_XTHEADVARITH,  "Vd,Vt,Vs",               MATCH_TH_VILE_VV,      MASK_TH_VILE_VV,      match_opcode, 0 }, \
 { "th.vilo.vv",      0, INSN_CLASS_XTHEADVARITH,  "Vd,Vt,Vs",               MATCH_TH_VILO_VV,      MASK_TH_VILO_VV,      match_opcode, 0 }, \
 { "th.vcrcfoldr.vv", 0, INSN_CLASS_XTHEADVARITH,  "Vd,Vt,Vs",               MATCH_TH_VCRCFOLDR_VV, MASK_TH_VCRCFOLDR_VV, match_opcode, 0 }, \
 { "th.vcrcfoldn.vv", 0, INSN_CLASS_XTHEADVARITH,  "Vd,Vt,Vs",               MATCH_TH_VCRCFOLDN_VV, MASK_TH_VCRCFOLDN_VV, match_opcode, 0 }, \
 { "th.vgmulxor.vv",  0, INSN_CLASS_XTHEADVARITH,  "Vd,Vt,Vs",                MATCH_TH_VGMULXOR_VV, MASK_TH_VGMULXOR_VV, match_opcode, 0 }, \
+/* XuanTie(THead) Vecotr Coder */ \
+{ "th.vabd.vv",      0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,VsVm",             MATCH_TH_VABD_VV,      MASK_TH_VABD_VV,      match_opcode, 0 }, \
+{ "th.vabd.vx",      0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,sVm",              MATCH_TH_VABD_VX,      MASK_TH_VABD_VX,      match_opcode, 0 }, \
+{ "th.vabd.vi",      0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,ViVm",        MATCH_TH_VABD_VI,      MASK_TH_VABD_VI,      match_opcode, 0 }, \
+{ "th.vabdu.vv",     0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,VsVm",             MATCH_TH_VABDU_VV,     MASK_TH_VABDU_VV,     match_opcode, 0 }, \
+{ "th.vabdu.vx",     0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,sVm",              MATCH_TH_VABDU_VX,     MASK_TH_VABDU_VX,     match_opcode, 0 }, \
+{ "th.vabdu.vi",     0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,VjVm",             MATCH_TH_VABDU_VI,     MASK_TH_VABDU_VI,     match_opcode, 0 }, \
+{ "th.vaba.vv",      0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,VsVm",             MATCH_TH_VABA_VV,      MASK_TH_VABA_VV,      match_opcode, 0 }, \
+{ "th.vaba.vx",      0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,sVm",              MATCH_TH_VABA_VX,      MASK_TH_VABA_VX,      match_opcode, 0 }, \
+{ "th.vaba.vi",      0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,ViVm",             MATCH_TH_VABA_VI,      MASK_TH_VABA_VI,      match_opcode, 0 }, \
+{ "th.vabau.vv",     0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,VsVm",             MATCH_TH_VABAU_VV,     MASK_TH_VABAU_VV,     match_opcode, 0 }, \
+{ "th.vabau.vx",     0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,sVm",              MATCH_TH_VABAU_VX,     MASK_TH_VABAU_VX,     match_opcode, 0 }, \
+{ "th.vabau.vi",     0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,VjVm",             MATCH_TH_VABAU_VI,     MASK_TH_VABAU_VI,     match_opcode, 0 }, \
+{ "th.vwabd.vv",     0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,VsVm",             MATCH_TH_VWABD_VV,     MASK_TH_VWABD_VV,     match_opcode, 0 }, \
+{ "th.vwabd.vx",     0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,sVm",              MATCH_TH_VWABD_VX,     MASK_TH_VWABD_VX,     match_opcode, 0 }, \
+{ "th.vwaba.vv",     0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,VsVm",             MATCH_TH_VWABA_VV,     MASK_TH_VWABA_VV,     match_opcode, 0 }, \
+{ "th.vwaba.vx",     0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,sVm",              MATCH_TH_VWABA_VX,     MASK_TH_VWABA_VX,     match_opcode, 0 }, \
+{ "th.vwabau.vv",    0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,VsVm",             MATCH_TH_VWABAU_VV,    MASK_TH_VWABAU_VV,    match_opcode, 0 }, \
+{ "th.vwabau.vx",    0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,sVm",              MATCH_TH_VWABAU_VX,    MASK_TH_VWABAU_VX,    match_opcode, 0 }, \
+{ "th.vwabdu.vv",    0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,VsVm",             MATCH_TH_VWABDU_VV,    MASK_TH_VWABDU_VV,    match_opcode, 0 }, \
+{ "th.vwabdu.vx",    0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,sVm",              MATCH_TH_VWABDU_VX,    MASK_TH_VWABDU_VX,    match_opcode, 0 }, \
+{ "th.vfabd.vv",     0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,VsVm",             MATCH_TH_VFABD_VV,     MASK_TH_VFABD_VV,     match_opcode, 0 }, \
+{ "th.vfabd.vf",     0, INSN_CLASS_XTHEADVCODER,  "Vd,Vt,SVm",              MATCH_TH_VFABD_VF,     MASK_TH_VFABD_VF,     match_opcode, 0 }, \
 
