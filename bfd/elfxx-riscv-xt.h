@@ -38,7 +38,8 @@ bool riscv_xuantie_multi_subset_supports (riscv_parse_subset_t *rps,
   M ("xtheadcei", INSN_CLASS_XTHEADCEI, 1, 0, 0)                              \
   M ("xtheadcf", INSN_CLASS_XTHEADCF, 1, 0, 0)                                \
   M ("xtheadcv", INSN_CLASS_XTHEADCV, 1, 0, 0)                                \
-  M ("xtheadvsfa", INSN_CLASS_XTHEADVSFA, 1, 0, 0)
+  M ("xtheadvsfa", INSN_CLASS_XTHEADVSFA, 1, 0, 0)                            \
+  M ("xtheadvsfb", INSN_CLASS_XTHEADVSFB, 1, 0, 0)
 
 #define XUANTIE_M_riscv_supported_vendor_x_ext(xstring, class, r, p, s)       \
   { xstring, ISA_SPEC_CLASS_DRAFT, r, p, s },

@@ -35,4 +35,7 @@
 {"th.vftanh.v", 0, INSN_CLASS_XTHEADVSFA, "Vd,VtVm", MATCH_TH_VFTANH_V, MASK_TH_VFTANH_V, match_opcode, 0 }, \
 {"th.vfsig.v", 0, INSN_CLASS_XTHEADVSFA, "Vd,VtVm", MATCH_TH_VFSIG_V, MASK_TH_VFSIG_V, match_opcode, 0 }, \
 {"th.vfrec.v", 0, INSN_CLASS_XTHEADVSFA, "Vd,VtVm", MATCH_TH_VFREC_V, MASK_TH_VFREC_V, match_opcode, 0 }, \
+/* xtheadvsfb, Vector SFB Extension. */ \
+{"th.vfsin.v", 0, INSN_CLASS_XTHEADVSFB, "Vd,VtVm", MATCH_TH_VFSIN_V, MASK_TH_VFSIN_V, match_opcode, 0 }, \
+{"th.vfcos.v", 0, INSN_CLASS_XTHEADVSFB, "Vd,VtVm", MATCH_TH_VFCOS_V, MASK_TH_VFCOS_V, match_opcode, 0 }, \
 

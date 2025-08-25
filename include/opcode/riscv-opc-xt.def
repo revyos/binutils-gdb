@@ -93,6 +93,12 @@
 #define MATCH_TH_VFREC_V 0xc001e00b
 #define MASK_TH_VFREC_V 0xfc0ff07f
 
+/* xtheadvsfb Extension. */
+#define MATCH_TH_VFSIN_V 0xc002600b
+#define MASK_TH_VFSIN_V 0xfc0ff07f
+#define MATCH_TH_VFCOS_V 0xc002e00b
+#define MASK_TH_VFCOS_V 0xfc0ff07f
+
 /* Privileged CSRs for Xuantie.  */
 /* T-HEAD M mode CSR.  */
 #define CSR_MXSTATUS 0x7c0
